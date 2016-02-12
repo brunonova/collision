@@ -88,8 +88,48 @@ class GameLayer(ColorLayer):
 			enemy.enabled = False
 			enemy.stop()
 
-	def bounce_balls(self, b1: Enemy, b2: Enemy):
-		pass
+	def bounce_balls(self, b1: 'Enemy', b2: 'Enemy'):
+		p1 = Vector2(b1.x, b1.y)
+		p2 = Vector2(b2.x, b2.y)
+		delta = p1 - p2
+		dist = util.distance(b1.x, b1.y, b2.x, b2.y)
+
+		if dist == 0:
+			dist = Enemy.RADIUS * 2 - 1
+			delta = Vector2(Enemy * 2, 0)
+		mtd = delta * (((Enemy.RADIUS * 2) - dist) / dist)
+
+		im1 = im2 = 1  # inverse mass quantities
+
+		# Push-pull them appart
+		p1 += mtd * (im1 / (im1 + im2))
+		p2 -= mtd * (im2 / (im1 + im2))
+		b1.position = p1.x, p1.y
+		b2.position = p2.x, p2.y
+
+		# Impact speed
+		v = Vector2(b1.vx - b2.vy, b1.vy - b2.vy)
+		mtd.normalize()
+		vn = v.dot(mtd)
+
+		# Sphere intersecting but moving away from each other already
+		if vn > 0:
+			return
+
+		# Collision impulse
+		restitution = 1
+		i = (-(1 + restitution) * vn) / (im1 + im2)
+		impulse = mtd * i
+
+		# Change in momentum
+		vel1 = Vector2(b1.vx, b1.vy)
+		vel2 = Vector2(b2.vx, b2.vy)
+		vel1 += impulse * im1
+		vel2 -= impulse * im2
+		b1.vx, b1.vy = vel1.x, vel1.y
+		b2.vx, b2.vy = vel2.x, vel2.y
+
+		# TODO: Check borders
 
 
 class Player(Sprite):
