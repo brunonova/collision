@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import random
-
 import math
 
 from cocos.actions import FadeIn, CallFunc, FadeOut
@@ -20,10 +19,10 @@ class GameLayer(ColorLayer):
 
 	def __init__(self):
 		super().__init__(192, 192, 192, 255)
-		self.keys_pressed = set()
-		self.mouse_dx = self.mouse_dy = 0
-		self.collman = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
-		self.new_enemy_timer = 0
+		self.keysPressed = set()
+		self.mouseDx = self.mouseDy = 0
+		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
+		self.newEnemyTimer = 0
 		self.schedule(self.update)
 
 		# Create player ball
@@ -36,59 +35,59 @@ class GameLayer(ColorLayer):
 			self.add(enemy)
 
 	def update(self, dt):
-		self.collman.clear()
+		self.collMan.clear()
 
 		# Update player ball
-		self.player.update(dt, self.mouse_dx, self.mouse_dy, self.keys_pressed)
-		self.mouse_dx = self.mouse_dy = 0
-		self.collman.add(self.player)
+		self.player.update(dt, self.mouseDx, self.mouseDy, self.keysPressed)
+		self.mouseDx = self.mouseDy = 0
+		self.collMan.add(self.player)
 
 		# Update enemy balls
 		for enemy in self.enemies:
 			enemy.update(dt)
 			if enemy.enabled:
-				self.collman.add(enemy)
+				self.collMan.add(enemy)
 
 		# Check collisions between player and enemies
 		for enemy in self.enemies:
-			if enemy.enabled and self.collman.they_collide(self.player, enemy):
-				self.game_over()
+			if enemy.enabled and self.collMan.they_collide(self.player, enemy):
+				self.gameOver()
 
 		# Check collisions between enemies
 		for i, enemy in enumerate(self.enemies):
 			for j, other in enumerate(self.enemies):
 				if j > i and enemy.enabled and other.enabled and \
-				   self.collman.they_collide(enemy, other):
-					self.bounce_balls(enemy, other)
+				   self.collMan.they_collide(enemy, other):
+					self.bounceBalls(enemy, other)
 
 		# Add a new enemy ball every 10 seconds
-		self.new_enemy_timer += dt
-		if self.new_enemy_timer >= 10:
-			self.new_enemy_timer -= 10
+		self.newEnemyTimer += dt
+		if self.newEnemyTimer >= 10:
+			self.newEnemyTimer -= 10
 			enemy = Enemy(self.player.x, self.player.y)
 			self.enemies.append(enemy)
 			self.add(enemy)
 
 	def on_key_press(self, key, modifiers):
-		self.keys_pressed.add(key)
+		self.keysPressed.add(key)
 
 	def on_key_release(self, key, modifiers):
-		if key in self.keys_pressed:
-			self.keys_pressed.remove(key)
+		if key in self.keysPressed:
+			self.keysPressed.remove(key)
 
 	def on_mouse_motion(self, x, y, dx, dy):
-		self.mouse_dx += dx
-		self.mouse_dy += dy
+		self.mouseDx += dx
+		self.mouseDy += dy
 
-	def game_over(self):
+	def gameOver(self):
 		self.player.enabled = False
-		self.new_enemy_timer = -500
+		self.newEnemyTimer = -500
 		self.player.do((FadeOut(2)) + CallFunc(exit, 0))
 		for enemy in self.enemies:
 			enemy.enabled = False
 			enemy.stop()
 
-	def bounce_balls(self, b1: 'Enemy', b2: 'Enemy'):
+	def bounceBalls(self, b1: 'Enemy', b2: 'Enemy'):
 		p1 = Vector2(b1.x, b1.y)
 		p2 = Vector2(b2.x, b2.y)
 		delta = p1 - p2
@@ -190,7 +189,7 @@ class Enemy(Sprite):
 		"""
 		super().__init__("enemy.png")
 		self.anchor = Enemy.RADIUS, Enemy.RADIUS
-		self._set_random_position(player_x, player_y)
+		self._setRandomPosition(player_x, player_y)
 		self.vx = self.vy = 0
 		self.enabled = False
 		self.opacity = 0
@@ -198,17 +197,17 @@ class Enemy(Sprite):
 
 	def _enable(self):
 		self.cshape = CircleShape(Vector2(self.x, self.y), Enemy.RADIUS)
-		self._set_random_direction()
+		self._setRandomDirection()
 		self.enabled = True
 
-	def _set_random_position(self, player_x, player_y):
+	def _setRandomPosition(self, player_x, player_y):
 		while True:
 			self.x = random.randint(Enemy.RADIUS, director.window.width - Enemy.RADIUS)
 			self.y = random.randint(Enemy.RADIUS, director.window.height - Enemy.RADIUS)
 			if util.distance(self.x, self.y, player_x, player_y) >= Enemy.SAFE_DISTANCE:
 				break
 
-	def _set_random_direction(self):
+	def _setRandomDirection(self):
 		direction = random.random() * math.pi * 2
 		self.vx = math.cos(direction) * Enemy.SPEED
 		self.vy = math.sin(direction) * Enemy.SPEED
