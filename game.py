@@ -1,17 +1,39 @@
 #!/usr/bin/env python3
 import random
 import math
-
+from gettext import gettext as _
 from cocos.actions import FadeIn, CallFunc, FadeOut
 from cocos.collision_model import CircleShape, CollisionManagerGrid
 from cocos.director import director
 from cocos.euclid import Vector2
-from cocos.layer import ColorLayer
+from cocos.layer import ColorLayer, Layer
 from cocos.scene import Scene
 from cocos.sprite import Sprite
+from cocos.text import Label
 from pyglet import window
 
 import util
+
+
+class HUDLayer(Layer):
+	def __init__(self, gameLayer):
+		super().__init__()
+
+		self.gameLayer = gameLayer
+		self.time = 0
+
+		self.lblTime = Label(bold=True, color=(0, 0, 0, 255), anchor_x="left", anchor_y="bottom")
+		self.lblTime.position = 10, 0
+		self.add(self.lblTime)
+
+		self.lblEnemies = Label(bold=True, color=(0, 0, 0, 255), anchor_x="right", anchor_y="bottom")
+		self.lblEnemies.position = director.window.width - 10, 0
+		self.add(self.lblEnemies)
+
+	def update(self, dt):
+		self.time += dt
+		self.lblTime.element.text = _("Time: {}").format(int(self.time))
+		self.lblEnemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
 
 
 class GameLayer(ColorLayer):
@@ -33,6 +55,9 @@ class GameLayer(ColorLayer):
 		self.enemies = [Enemy(self.player.x, self.player.y) for x in range(3)]
 		for enemy in self.enemies:
 			self.add(enemy)
+
+		self.hudLayer = HUDLayer(self)
+		self.add(self.hudLayer, z=1)
 
 	def update(self, dt):
 		self.collMan.clear()
@@ -67,6 +92,9 @@ class GameLayer(ColorLayer):
 			enemy = Enemy(self.player.x, self.player.y)
 			self.enemies.append(enemy)
 			self.add(enemy)
+
+		# Update the HUD
+		self.hudLayer.update(dt)
 
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)
@@ -129,6 +157,9 @@ class GameLayer(ColorLayer):
 		b2.vx, b2.vy = vel2.x, vel2.y
 
 		# TODO: Check borders
+
+	def getNumberOfEnemies(self):
+		return len(self.enemies)
 
 
 class Player(Sprite):
