@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 import math
+import gettext
 from gettext import gettext as _
 from cocos.actions import FadeIn, CallFunc, FadeOut
 from cocos.collision_model import CircleShape, CollisionManagerGrid
@@ -261,6 +262,8 @@ class Enemy(Sprite):
 
 
 if __name__ == "__main__":
+	gettext.bindtextdomain("collision", "./mo")
+	gettext.textdomain("collision")
 	director.init(caption="Collision", width=500, height=500)
 	director.window.set_exclusive_mouse(True)
 	director.run(Scene(GameLayer()))
