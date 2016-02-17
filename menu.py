@@ -8,11 +8,13 @@ from game import GameScene
 
 
 class MenuScene(Scene):
+	"""The scene that displays the main menu."""
 	def __init__(self):
 		super().__init__(MenuLayer())
 
 
 class MenuLayer(Menu):
+	"""Layer that displays the menu."""
 	def __init__(self):
 		super().__init__("Collision")
 		self.menu_anchor_x = self.menu_anchor_y = "center"
@@ -26,7 +28,7 @@ class MenuLayer(Menu):
 
 	def on_enter(self):
 		super().on_enter()
-		director.window.set_exclusive_mouse(False) # ensure cursor is available
+		director.window.set_exclusive_mouse(False)  # ensure cursor is available
 
 	def on_quit(self):
 		pyglet.app.exit()

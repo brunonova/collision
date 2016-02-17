@@ -9,11 +9,15 @@ from balls import *
 
 
 class GameScene(Scene):
+	"""The scene that runs the actual game."""
 	def __init__(self):
-		super().__init__(GameLayer())
+		gameLayer = GameLayer()
+		hudLayer = HUDLayer(gameLayer)
+		super().__init__(gameLayer, hudLayer)
 
 
 class HUDLayer(Layer):
+	"""Layer that shows the HUD."""
 	def __init__(self, gameLayer):
 		super().__init__()
 
@@ -28,6 +32,8 @@ class HUDLayer(Layer):
 		self.lblEnemies.position = director.window.width - 10, 0
 		self.add(self.lblEnemies)
 
+		self.schedule(self.update)
+
 	def update(self, dt):
 		self.time += dt
 		self.lblTime.element.text = _("Time: {}").format(int(self.time))
@@ -35,12 +41,13 @@ class HUDLayer(Layer):
 
 
 class GameLayer(ColorLayer):
+	"""Layer that shows and controls the actual game."""
 	is_event_handler = True
 
 	def __init__(self):
 		super().__init__(192, 192, 192, 255)
 		self.keysPressed = set()
-		self.mouseDx = self.mouseDy = 0
+		self.mouseDelta = Vector2(0, 0)
 		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
 		self.newEnemyTimer = 0
 		self.schedule(self.update)
@@ -54,9 +61,6 @@ class GameLayer(ColorLayer):
 		for enemy in self.enemies:
 			self.add(enemy)
 
-		self.hudLayer = HUDLayer(self)
-		self.add(self.hudLayer, z=1)
-
 	def on_enter(self):
 		super().on_enter()
 		director.window.set_exclusive_mouse(True)
@@ -69,8 +73,8 @@ class GameLayer(ColorLayer):
 		self.collMan.clear()
 
 		# Update player ball
-		self.player.update(dt, self.mouseDx, self.mouseDy, self.keysPressed)
-		self.mouseDx = self.mouseDy = 0
+		self.player.update(dt, self.mouseDelta, self.keysPressed)
+		self.mouseDelta = Vector2(0, 0)
 		self.collMan.add(self.player)
 
 		# Update enemy balls
@@ -87,8 +91,8 @@ class GameLayer(ColorLayer):
 		# Check collisions between enemies
 		for i, enemy in enumerate(self.enemies):
 			for j, other in enumerate(self.enemies):
-				if j > i and enemy.enabled and other.enabled and \
-				   self.collMan.they_collide(enemy, other):
+				if j > i and enemy.enabled and other.enabled \
+				   and self.collMan.they_collide(enemy, other):
 					self.bounceBalls(enemy, other)
 
 		# Add a new enemy ball every 10 seconds
@@ -99,9 +103,6 @@ class GameLayer(ColorLayer):
 			self.enemies.append(enemy)
 			self.add(enemy)
 
-		# Update the HUD
-		self.hudLayer.update(dt)
-
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)
 
@@ -110,8 +111,7 @@ class GameLayer(ColorLayer):
 			self.keysPressed.remove(key)
 
 	def on_mouse_motion(self, x, y, dx, dy):
-		self.mouseDx += dx
-		self.mouseDy += dy
+		self.mouseDelta += Vector2(dx, dy)
 
 	def gameOver(self):
 		self.player.enabled = False
@@ -121,16 +121,16 @@ class GameLayer(ColorLayer):
 			enemy.enabled = False
 			enemy.stop()
 
-	def bounceBalls(self, b1: 'Enemy', b2: 'Enemy'):
+	def bounceBalls(self, b1: Enemy, b2: Enemy):
 		p1 = Vector2(b1.x, b1.y)
 		p2 = Vector2(b2.x, b2.y)
 		delta = p1 - p2
 		dist = util.distance(b1.x, b1.y, b2.x, b2.y)
 
 		if dist == 0:
-			dist = Enemy.RADIUS * 2 - 1
-			delta = Vector2(Enemy * 2, 0)
-		mtd = delta * (((Enemy.RADIUS * 2) - dist) / dist)
+			dist = b1.radius * 2 - 1
+			delta = Vector2(b1.radius * 2, 0)
+		mtd = delta * (((b1.radius * 2) - dist) / dist)
 
 		im1 = im2 = 1  # inverse mass quantities
 
@@ -141,7 +141,7 @@ class GameLayer(ColorLayer):
 		b2.position = p2.x, p2.y
 
 		# Impact speed
-		v = Vector2(b1.vx - b2.vy, b1.vy - b2.vy)
+		v = b1.speed - b2.speed
 		mtd.normalize()
 		vn = v.dot(mtd)
 
@@ -155,12 +155,8 @@ class GameLayer(ColorLayer):
 		impulse = mtd * i
 
 		# Change in momentum
-		vel1 = Vector2(b1.vx, b1.vy)
-		vel2 = Vector2(b2.vx, b2.vy)
-		vel1 += impulse * im1
-		vel2 -= impulse * im2
-		b1.vx, b1.vy = vel1.x, vel1.y
-		b2.vx, b2.vy = vel2.x, vel2.y
+		b1.speed += impulse * im1
+		b2.speed -= impulse * im2
 
 		# TODO: Check borders
 

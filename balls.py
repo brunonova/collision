@@ -13,98 +13,111 @@ import util
 
 
 class Player(Sprite):
-	RADIUS = 16
-	SPEED = 400
+	"""The player ball."""
+	SPEED = 400  # movement speed with the keyboard
 
 	def __init__(self, x, y):
 		"""
 		Creates the player ball.
-		:param x: Initial x position of the ball.
-		:param y: Initial y position of the ball.
+
+		@param x: initial x position of the ball.
+		@param y: initial y position of the ball.
 		"""
 		super().__init__("player.png")
-		self.anchor = Player.RADIUS, Player.RADIUS
-		self.position = x, y
+		self.radius = self.image.width // 2
+		self.anchor = self.radius, self.radius
+		self.position = x, y  # WARNING: position is a tuple, not a vector!
 		self.enabled = True
-		self.cshape = CircleShape(Vector2(self.x, self.y), Player.RADIUS)
+		self.cshape = CircleShape(Vector2(self.x, self.y), self.radius)
 
-	def update(self, dt, mouse_dx, mouse_dy, keys_pressed):
+	def update(self, dt, mouseDelta: Vector2, keysPressed):
 		if self.enabled:
-			# Handle mouse
-			self.x += mouse_dx
-			self.y += mouse_dy
-
-			# Handle keyboard
-			if window.key.LEFT in keys_pressed:
-				self.x -= Player.SPEED * dt
-			if window.key.RIGHT in keys_pressed:
-				self.x += Player.SPEED * dt
-			if window.key.UP in keys_pressed:
-				self.y += Player.SPEED * dt
-			if window.key.DOWN in keys_pressed:
-				self.y -= Player.SPEED * dt
+			# Move player according to mouse/keyboard
+			self.position += mouseDelta
+			self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
 
 			# Check window borders
-			if self.x < Player.RADIUS:
-				self.x = Player.RADIUS
-			elif self.x > director.window.width - Player.RADIUS:
-				self.x = director.window.width - Player.RADIUS
-			if self.y < Player.RADIUS:
-				self.y = Player.RADIUS
-			elif self.y > director.window.height - Player.RADIUS:
-				self.y = director.window.height - Player.RADIUS
+			if self.x < self.radius:
+				self.x = self.radius
+			elif self.x > director.window.width - self.radius:
+				self.x = director.window.width - self.radius
+			if self.y < self.radius:
+				self.y = self.radius
+			elif self.y > director.window.height - self.radius:
+				self.y = director.window.height - self.radius
 
-			self.cshape.center = Vector2(self.x, self.y)
+			self.cshape.center = Vector2(self.x, self.y)  # the center must be a Vector2!
+
+	@staticmethod
+	def _keyboardDelta(keysPressed):
+		"""
+		Returns a vector that points to the direction the arrow keys are pressed.
+
+		Each coordinate of the vector will have the value -1, 0 or 1.
+
+		@param keysPressed: the keys currently held down.
+		@return: direction of the arraw keys pressed in the keyboard.
+		"""
+		delta = Vector2(0, 0)
+
+		if window.key.LEFT in keysPressed:
+			delta.x -= 1
+		if window.key.RIGHT in keysPressed:
+			delta.x += 1
+		if window.key.UP in keysPressed:
+			delta.y += 1
+		if window.key.DOWN in keysPressed:
+			delta.y -= 1
+
+		return delta
 
 
 class Enemy(Sprite):
-	RADIUS = 16
-	SAFE_DISTANCE = 100
-	SPEED = 300
+	SAFE_DISTANCE = 100  # minimum distance from the player when created
+	SPEED = 300  # initial speed of the ball
 
-	def __init__(self, player_x, player_y):
+	def __init__(self, playerX, playerY):
 		"""
 		Creates an enemy ball with a random position.
-		:param player_x: X position of the player ball.
-		:param player_y: Y position of the player ball.
+
+		@param playerX: x position of the player ball.
+		@param playerY: y position of the player ball.
 		"""
 		super().__init__("enemy.png")
-		self.anchor = Enemy.RADIUS, Enemy.RADIUS
-		self._setRandomPosition(player_x, player_y)
-		self.vx = self.vy = 0
+		self.radius = self.image.width // 2
+		self.anchor = self.radius, self.radius
+		self._setRandomPosition(playerX, playerY)
+		self.speed = Vector2(0, 0)
 		self.enabled = False
 		self.opacity = 0
 		self.do(FadeIn(1) + CallFunc(self._enable))
 
 	def _enable(self):
-		self.cshape = CircleShape(Vector2(self.x, self.y), Enemy.RADIUS)
+		self.cshape = CircleShape(Vector2(self.x, self.y), self.radius)
 		self._setRandomDirection()
 		self.enabled = True
 
-	def _setRandomPosition(self, player_x, player_y):
+	def _setRandomPosition(self, playerX, playerY):
 		while True:
-			self.x = random.randint(Enemy.RADIUS, director.window.width - Enemy.RADIUS)
-			self.y = random.randint(Enemy.RADIUS, director.window.height - Enemy.RADIUS)
-			if util.distance(self.x, self.y, player_x, player_y) >= Enemy.SAFE_DISTANCE:
+			self.x = random.randint(self.radius, director.window.width - self.radius)
+			self.y = random.randint(self.radius, director.window.height - self.radius)
+			if util.distance(self.x, self.y, playerX, playerY) >= Enemy.SAFE_DISTANCE:
 				break
 
 	def _setRandomDirection(self):
-		direction = random.random() * math.pi * 2
-		self.vx = math.cos(direction) * Enemy.SPEED
-		self.vy = math.sin(direction) * Enemy.SPEED
+		self.speed = util.vectorFromAngle(random.random() * math.pi * 2, Enemy.SPEED)
 
 	def update(self, dt):
 		if self.enabled:
 			# Move ball
-			self.x += self.vx * dt
-			self.y += self.vy * dt
+			self.position += self.speed * dt
 
 			# Check borders
-			if self.x < Enemy.RADIUS or self.x > director.window.width - Enemy.RADIUS:
-				self.vx = -self.vx
-				self.x += self.vx * dt
-			if self.y < Enemy.RADIUS or self.y > director.window.height - Enemy.RADIUS:
-				self.vy = -self.vy
-				self.y += self.vy * dt
+			if self.x < self.radius or self.x > director.window.width - self.radius:
+				self.speed.x = -self.speed.x
+				self.x += self.speed.x * dt
+			if self.y < self.radius or self.y > director.window.height - self.radius:
+				self.speed.y = -self.speed.y
+				self.y += self.speed.y * dt
 
 			self.cshape.center = Vector2(self.x, self.y)
