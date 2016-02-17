@@ -27,8 +27,9 @@ class MenuLayer(Menu):
 
 		# Initialize game options
 		self.options = {
-			"ballsCollide": True,
-			"difficulty": constants.MEDIUM
+			"type": constants.TIME,
+			"difficulty": constants.MEDIUM,
+			"ballsCollide": True
 		}
 
 		# Customize the menu
@@ -72,6 +73,8 @@ class OptionsLayer(Menu):
 
 		# Add the items and create the menu
 		items = [
+			MultiMenuItem(_("Type: "), self.onType,
+			              [_("Time"), _("Coins")], constants.TIME),
 			MultiMenuItem(_("Difficulty: "), self.onDifficulty,
 			              [_("Easy"), _("Medium"), _("Hard")], constants.MEDIUM),
 			ToggleMenuItem(_("Ball collisions: "), self.onBallsCollide,
@@ -79,6 +82,9 @@ class OptionsLayer(Menu):
 			MenuItem(_("Back"), self.on_quit)
 		]
 		self.create_menu(items)
+
+	def onType(self, index):
+		self.menuLayer.options["type"] = index
 
 	def onDifficulty(self, index):
 		self.menuLayer.options["difficulty"] = index

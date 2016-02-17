@@ -10,11 +10,12 @@ from pyglet import window
 
 import util
 
-__all__ = ["Player", "Enemy"]
+__all__ = ["Player", "Enemy", "Coin"]
 
 
 class Ball(Sprite):
 	"""Base class for player and enemy balls."""
+
 	def __init__(self, image, *args, **kwargs):
 		super().__init__(image, *args, **kwargs)
 		self.radius = self.image.width // 2  # radius of the ball
@@ -30,6 +31,23 @@ class Ball(Sprite):
 		self.x = min(max(self.x, self.radius), width - self.radius)
 		self.y = min(max(self.y, self.radius), height - self.radius)
 		self.cshape.center = Vector2(self.x, self.y)
+
+	def setRandomPosition(self, playerX, playerY, minPlayerDistance):
+		"""
+		Moves the ball to a random position.
+
+		@param playerX: x position of the player.
+		@param playerY: y position of the player.
+		@param minPlayerDistance: minimum distance from the player when created.
+		"""
+		while True:
+			width, height = director.get_window_size()
+			x = random.randint(self.radius, width - self.radius)
+			y = random.randint(self.radius, height - self.radius)
+			if util.distance(x, y, playerX, playerY) >= minPlayerDistance:
+				break
+		self.position = x, y
+		self.cshape.center = Vector2(x, y)
 
 
 class Player(Ball):
@@ -80,7 +98,7 @@ class Player(Ball):
 
 class Enemy(Ball):
 	"""An enemy ball."""
-	SAFE_DISTANCE = 100  # minimum distance from the player when created
+	PLAYER_DISTANCE = 100  # minimum distance from the player when created
 
 	def __init__(self, playerX, playerY, initial_speed):
 		"""
@@ -93,7 +111,7 @@ class Enemy(Ball):
 		super().__init__("enemy.png")
 		self.anchor = self.radius, self.radius
 		self._initialSpeed = initial_speed
-		self._setRandomPosition(playerX, playerY)
+		self.setRandomPosition(playerX, playerY, Enemy.PLAYER_DISTANCE)
 		self.speed = Vector2(0, 0)
 		self.enabled = False  # whether the ball is moving and is collidable
 		self.opacity = 0
@@ -163,15 +181,27 @@ class Enemy(Ball):
 		self._setRandomDirection()
 		self.enabled = True
 
-	def _setRandomPosition(self, playerX, playerY):
-		while True:
-			width, height = director.get_window_size()
-			x = random.randint(self.radius, width - self.radius)
-			y = random.randint(self.radius, height - self.radius)
-			if util.distance(x, y, playerX, playerY) >= Enemy.SAFE_DISTANCE:
-				break
-		self.position = x, y
-		self.cshape.center = Vector2(x, y)
-
 	def _setRandomDirection(self):
 		self.speed = util.vectorFromAngle(random.random() * math.pi * 2, self._initialSpeed)
+
+
+class Coin(Ball):
+	"""A coin, used when the type of game is "Coins"."""
+	PLAYER_DISTANCE = 200  # minimum distance from the player when created
+
+	def __init__(self, playerX, playerY):
+		"""
+		Creates a coin with a random position.
+
+		@param playerX: x position of the player ball.
+		@param playerY: y position of the player ball.
+		"""
+		super().__init__("coin.png")
+		self.anchor = self.radius, self.radius
+		self.setRandomPosition(playerX, playerY, Coin.PLAYER_DISTANCE)
+		self.enabled = False  # whether the coin can be catched
+		self.opacity = 0
+		self.do(FadeIn(1) + CallFunc(self._enable))
+
+	def _enable(self):
+		self.enabled = True

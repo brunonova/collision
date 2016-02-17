@@ -28,27 +28,31 @@ class HUDLayer(Layer):
 	"""Layer that shows the HUD."""
 	def __init__(self, gameLayer):
 		super().__init__()
-
 		self.gameLayer = gameLayer
 		self.time = 0
 
-		self.lblTime = Label(bold=True, color=constants.FONT_COLOR,
-		                     anchor_x="left", anchor_y="bottom")
-		self.lblTime.position = 10, 0
-		self.add(self.lblTime)
+		# Time/coins label
+		self.score = Label(bold=True, color=constants.FONT_COLOR,
+		                   anchor_x="left", anchor_y="bottom")
+		self.score.position = 10, 0
+		self.add(self.score)
 
-		self.lblEnemies = Label(bold=True, color=constants.FONT_COLOR,
-		                        anchor_x="right", anchor_y="bottom")
-		self.lblEnemies.position = director.window.width - 10, 0
-		self.add(self.lblEnemies)
+		# Enemy ball count label
+		self.enemies = Label(bold=True, color=constants.FONT_COLOR,
+		                     anchor_x="right", anchor_y="bottom")
+		self.enemies.position = director.window.width - 10, 0
+		self.add(self.enemies)
 
 		self.schedule(self.update)
 
 	def update(self, dt):
 		if not self.gameLayer.isGameOver:
-			self.time += dt
-			self.lblTime.element.text = _("Time: {}").format(int(self.time))
-			self.lblEnemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
+			if self.gameLayer.options["type"] == constants.TIME:
+				self.time += dt
+				self.score.element.text = _("Time: {}").format(int(self.time))
+			else:
+				self.score.element.text = _("Coins: {}").format(self.gameLayer.coins)
+			self.enemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
 
 
 class GameLayer(ColorLayer):
@@ -62,30 +66,40 @@ class GameLayer(ColorLayer):
 		@param options: game options (a dictionary).
 		"""
 		super().__init__(*constants.BACKGROUND_COLOR)
+
 		self.options = options
 		self.keysPressed = set()
-		self.mouseDelta = Vector2(0, 0)
-		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
-		self.player = None
+		self.player = self.coin = None
 		self.enemies = []
 		self.isGameOver = False
+		self.coins = 0
+		self.mouseDelta = Vector2(0, 0)
+
+		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
 		self.schedule(self.update)
 
-		# Add new enemy every 10/15/20 seconds (depends on difficulty)
-		interval = (20, 15, 10)[self.options["difficulty"]]
-		self.schedule_interval(self.addEnemyHandler, interval)
+		if self.options["type"] == constants.TIME:
+			# Add new enemy every 10/15/20 seconds (depends on difficulty)
+			interval = (20, 15, 10)[self.options["difficulty"]]
+			self.schedule_interval(self.addEnemyHandler, interval)
 
 	def on_enter(self):
 		super().on_enter()
 		director.window.set_exclusive_mouse(True)  # "grab" the mouse
 
 		# Create player ball
-		self.player = Player(director.window.width // 2, director.window.height // 2)
+		width, height = director.get_window_size()
+		self.player = Player(width // 2, height // 2)
 		self.add(self.player)
 
 		# Create enemy balls
 		for x in range(3):
 			self.addEnemy()
+
+		if self.options["type"] == constants.COINS:
+			# Create coin
+			self.coin = Coin(self.player.x, self.player.y)
+			self.add(self.coin, z=0.1)
 
 	def on_exit(self):
 		super().on_exit()
@@ -136,6 +150,18 @@ class GameLayer(ColorLayer):
 				enemy.update(dt)
 				if enemy.enabled:
 					self.collMan.add(enemy)
+
+			# Check collision between player and coin
+			if self.options["type"] == constants.COINS and self.coin.enabled:
+				self.collMan.add(self.coin)
+				if self.collMan.they_collide(self.player, self.coin):
+					self.coins += 1
+					# Move the coin to a random position
+					self.coin.setRandomPosition(self.player.x, self.player.y,
+					                            Coin.PLAYER_DISTANCE)
+					# Add an enemy every 4/6/8 coins (depends on difficulty)
+					if self.coins % (8, 6, 4)[self.options["difficulty"]] == 0:
+						self.addEnemy()
 
 			# Check collisions between player and enemies
 			for enemy in self.enemies:
