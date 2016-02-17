@@ -55,14 +55,12 @@ class Player(Ball):
 		self.anchor = self.radius, self.radius
 		self.position = x, y  # WARNING: position is a tuple, not a vector!
 		self.cshape.center = Vector2(x, y)  # the center must be a Vector2!
-		self.enabled = True
 
 	def update(self, dt, mouseDelta: Vector2, keysPressed):
-		if self.enabled:
-			# Move player according to mouse/keyboard
-			self.position += mouseDelta
-			self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
-			self.ensureWithinBorders()  # check borders
+		# Move player according to mouse/keyboard
+		self.position += mouseDelta
+		self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
+		self.ensureWithinBorders()  # check borders
 
 	@staticmethod
 	def _keyboardDelta(keysPressed):
@@ -104,7 +102,7 @@ class Enemy(Ball):
 		self.anchor = self.radius, self.radius
 		self._setRandomPosition(playerX, playerY)
 		self.speed = Vector2(0, 0)
-		self.enabled = False
+		self.enabled = False  # whether the ball is moving and is collidable
 		self.opacity = 0
 		self.do(FadeIn(1) + CallFunc(self._enable))
 
