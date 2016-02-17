@@ -27,16 +27,8 @@ class Ball(Sprite):
 		The cshape is also updated.
 		"""
 		width, height = director.get_window_size()
-
-		if self.x < self.radius:
-			self.x = self.radius
-		elif self.x > width - self.radius:
-			self.x = width - self.radius
-		if self.y < self.radius:
-			self.y = self.radius
-		elif self.y > height - self.radius:
-			self.y = height - self.radius
-
+		self.x = min(max(self.x, self.radius), width - self.radius)
+		self.y = min(max(self.y, self.radius), height - self.radius)
 		self.cshape.center = Vector2(self.x, self.y)
 
 
