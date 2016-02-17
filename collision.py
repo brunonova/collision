@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import random
-import math
-import gettext
+import gettext, math, os, pyglet, random
 from gettext import gettext as _
 from cocos.actions import FadeIn, CallFunc, FadeOut
 from cocos.collision_model import CircleShape, CollisionManagerGrid
@@ -275,20 +273,30 @@ class MainMenu(Menu):
 		super().__init__("Collision")
 		self.menu_anchor_x = self.menu_anchor_y = "center"
 
-		items = [MenuItem(_("Play"), self.on_play),
-		         MenuItem(_("Quit"), self.on_quit)]
+		items = [MenuItem(_("Play"), self.onPlay),
+		         MenuItem(_("Quit"), self.onQuit)]
 		self.create_menu(items)
 
-	def on_play(self):
+	def onPlay(self):
 		director.replace(Scene(GameLayer()))
 
-	def on_quit(self):
+	def onQuit(self):
 		exit()
 
 
 if __name__ == "__main__":
-	gettext.bindtextdomain("collision", "./mo")
+	# Find directory path
+	path = os.path.dirname(os.path.abspath(__file__))
+
+	# Setup gettext
+	gettext.bindtextdomain("collision", os.path.join(path, "./mo"))
 	gettext.textdomain("collision")
+
+	# Setup resource paths
+	pyglet.resource.path.append(os.path.join(path, "res"))
+	pyglet.resource.reindex()
+
+	# Start game
 	director.init(caption="Collision", width=500, height=500)
 	# TODO: remove default handler
 	director.run(Scene(MainMenu()))
