@@ -6,6 +6,7 @@ from cocos.layer import Layer, ColorLayer
 from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
+from pyglet import window
 
 import constants
 from balls import *
@@ -48,8 +49,9 @@ class HUDLayer(Layer):
 	def update(self, dt):
 		if not self.gameLayer.isGameOver:
 			if self.gameLayer.options["type"] == constants.TIME:
-				self.time += dt
-				self.score.element.text = _("Time: {}").format(int(self.time))
+				if not self.gameLayer.paused:
+					self.time += dt
+					self.score.element.text = _("Time: {}").format(int(self.time))
 			else:
 				self.score.element.text = _("Coins: {}").format(self.gameLayer.coins)
 			self.enemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
@@ -72,16 +74,15 @@ class GameLayer(ColorLayer):
 		self.player = self.coin = None
 		self.enemies = []
 		self.isGameOver = False
+		self.paused = False
 		self.coins = 0
+		self.timerAddEnemy = 0
+		# Interval between enemy balls additions (depends on difficulty)
+		self.intervalAddEnemy = (20, 15, 10)[self.options["difficulty"]]
 		self.mouseDelta = Vector2(0, 0)
 
 		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
 		self.schedule(self.update)
-
-		if self.options["type"] == constants.TIME:
-			# Add new enemy every 10/15/20 seconds (depends on difficulty)
-			interval = (20, 15, 10)[self.options["difficulty"]]
-			self.schedule_interval(self.addEnemyHandler, interval)
 
 	def on_enter(self):
 		super().on_enter()
@@ -118,10 +119,6 @@ class GameLayer(ColorLayer):
 		self.add(enemy)
 		return enemy
 
-	def addEnemyHandler(self, dt):
-		if not self.isGameOver:
-			self.addEnemy()
-
 	def gameOver(self):
 		self.isGameOver = True
 
@@ -135,6 +132,25 @@ class GameLayer(ColorLayer):
 	def getNumberOfEnemies(self):
 		"""Returns the number of enemy balls."""
 		return len(self.enemies)
+
+	def pauseGame(self):
+		"""Pauses or unpauses the game."""
+		if not self.isGameOver:
+			self.paused = not self.paused
+			if self.paused:
+				self.add(PauseLayer(), name="pauseLayer", z=1)
+				self.pause_scheduler()
+				for enemy in self.enemies:
+					enemy.pause()
+				if self.options["type"] == constants.COINS:
+					self.coin.pause()
+			else:
+				self.remove("pauseLayer")
+				self.resume_scheduler()
+				for enemy in self.enemies:
+					enemy.resume()
+				if self.options["type"] == constants.COINS:
+					self.coin.resume()
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -176,12 +192,33 @@ class GameLayer(ColorLayer):
 						   and self.collMan.they_collide(enemy, other):
 							Enemy.bounceBalls(enemy, other)
 
+			if self.options["type"] == constants.TIME:
+				# Add new enemy every "intervalAddEnemy" seconds
+				self.timerAddEnemy += dt
+				if self.timerAddEnemy >= self.intervalAddEnemy:
+					self.timerAddEnemy -= self.intervalAddEnemy
+					self.addEnemy()
+
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)
+		if key in (window.key.P, window.key.PAUSE):
+			self.pauseGame()
 
 	def on_key_release(self, key, modifiers):
 		if key in self.keysPressed:
 			self.keysPressed.remove(key)
 
 	def on_mouse_motion(self, x, y, dx, dy):
-		self.mouseDelta += Vector2(dx, dy)
+		if not self.paused:
+			self.mouseDelta += Vector2(dx, dy)
+
+
+class PauseLayer(ColorLayer):
+	def __init__(self):
+		super().__init__(0, 0, 0, 128)
+
+		width, height = director.get_window_size()
+		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
+		               color=(255, 255, 255, 255), anchor_x="center", anchor_y="center")
+		paused.position = width // 2, height // 2
+		self.add(paused)
