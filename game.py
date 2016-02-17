@@ -8,6 +8,7 @@ from cocos.collision_model import CircleShape, CollisionManagerGrid
 from cocos.director import director
 from cocos.euclid import Vector2
 from cocos.layer import ColorLayer, Layer
+from cocos.menu import Menu, MenuItem
 from cocos.scene import Scene
 from cocos.sprite import Sprite
 from cocos.text import Label
@@ -60,6 +61,14 @@ class GameLayer(ColorLayer):
 		self.hudLayer = HUDLayer(self)
 		self.add(self.hudLayer, z=1)
 
+	def on_enter(self):
+		super().on_enter()
+		director.window.set_exclusive_mouse(True)
+
+	def on_exit(self):
+		super().on_exit()
+		director.window.set_exclusive_mouse(False)
+
 	def update(self, dt):
 		self.collMan.clear()
 
@@ -111,7 +120,7 @@ class GameLayer(ColorLayer):
 	def gameOver(self):
 		self.player.enabled = False
 		self.newEnemyTimer = -500
-		self.player.do((FadeOut(2)) + CallFunc(exit, 0))
+		self.player.do((FadeOut(2)) + CallFunc(lambda: director.replace(Scene(MainMenu()))))
 		for enemy in self.enemies:
 			enemy.enabled = False
 			enemy.stop()
@@ -261,9 +270,25 @@ class Enemy(Sprite):
 			self.cshape.center = Vector2(self.x, self.y)
 
 
+class MainMenu(Menu):
+	def __init__(self):
+		super().__init__("Collision")
+		self.menu_anchor_x = self.menu_anchor_y = "center"
+
+		items = [MenuItem(_("Play"), self.on_play),
+		         MenuItem(_("Quit"), self.on_quit)]
+		self.create_menu(items)
+
+	def on_play(self):
+		director.replace(Scene(GameLayer()))
+
+	def on_quit(self):
+		exit()
+
+
 if __name__ == "__main__":
 	gettext.bindtextdomain("collision", "./mo")
 	gettext.textdomain("collision")
 	director.init(caption="Collision", width=500, height=500)
-	director.window.set_exclusive_mouse(True)
-	director.run(Scene(GameLayer()))
+	# TODO: remove default handler
+	director.run(Scene(MainMenu()))
