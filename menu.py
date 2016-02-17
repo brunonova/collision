@@ -20,7 +20,21 @@ class MenuScene(Scene):
 						 MultiplexLayer(menuLayer, optionsLayer))
 
 
-class MenuLayer(Menu):
+class CustomizedMenu(Menu):
+	"""The same as the Menu class, but with custom fonts."""
+	def __init__(self, title=""):
+		super().__init__(title)
+		self.font_title["color"] = constants.FONT_COLOR
+		self.font_title["font_name"] = "Ubuntu"
+		self.font_item["color"] = constants.FONT_COLOR_NOT_SELECTED
+		self.font_item["font_name"] = "Ubuntu"
+		self.font_item_selected["color"] = constants.FONT_COLOR
+		self.font_item_selected["font_name"] = "Ubuntu"
+		self.font_item_selected["font_size"] = self.font_item["font_size"]
+		self.font_item_selected["bold"] = True
+
+
+class MenuLayer(CustomizedMenu):
 	"""Layer that displays the menu."""
 	def __init__(self):
 		super().__init__("Collision")
@@ -31,11 +45,6 @@ class MenuLayer(Menu):
 			"difficulty": constants.MEDIUM,
 			"ballsCollide": True
 		}
-
-		# Customize the menu
-		self.font_title["color"] = constants.FONT_COLOR
-		self.font_item["color"] = constants.FONT_COLOR_NOT_SELECTED
-		self.font_item_selected["color"] = constants.FONT_COLOR
 
 		# Add the items and create the menu
 		items = [
@@ -59,17 +68,12 @@ class MenuLayer(Menu):
 		pyglet.app.exit()
 
 
-class OptionsLayer(Menu):
+class OptionsLayer(CustomizedMenu):
 	"""Layer that display an options menu."""
 
 	def __init__(self, menuLayer):
 		super().__init__(_("Options"))
 		self.menuLayer = menuLayer
-
-		# Customize the menu
-		self.font_title["color"] = constants.FONT_COLOR
-		self.font_item["color"] = constants.FONT_COLOR_NOT_SELECTED
-		self.font_item_selected["color"] = constants.FONT_COLOR
 
 		# Add the items and create the menu
 		items = [

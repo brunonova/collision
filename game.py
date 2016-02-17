@@ -32,15 +32,15 @@ class HUDLayer(Layer):
 		self.time = 0
 
 		# Time/coins label
-		self.score = Label(bold=True, color=constants.FONT_COLOR,
+		self.score = Label(font_name="Ubuntu", font_size=16, color=constants.FONT_COLOR,
 		                   anchor_x="left", anchor_y="bottom")
 		self.score.position = 10, 0
 		self.add(self.score)
 
 		# Enemy ball count label
-		self.enemies = Label(bold=True, color=constants.FONT_COLOR,
+		self.enemies = Label(font_name="Ubuntu", font_size=16, color=constants.FONT_COLOR,
 		                     anchor_x="right", anchor_y="bottom")
-		self.enemies.position = director.window.width - 10, 0
+		self.enemies.position = director.get_window_size()[0] - 10, 0
 		self.add(self.enemies)
 
 		self.schedule(self.update)
