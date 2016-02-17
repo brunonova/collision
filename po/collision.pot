@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 22:09+0000\n"
+"POT-Creation-Date: 2016-02-17 16:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: game.py:37
+#: menu.py:70
+msgid "Ball collisions: "
+msgstr ""
+
+#: game.py:51
 msgid "Balls: {}"
 msgstr ""
 
-#: game.py:36
+#: menu.py:37 menu.py:60
+msgid "Options"
+msgstr ""
+
+#: menu.py:36
+msgid "Play"
+msgstr ""
+
+#: menu.py:38 menu.py:72
+msgid "Quit"
+msgstr ""
+
+#: game.py:50
 msgid "Time: {}"
 msgstr ""

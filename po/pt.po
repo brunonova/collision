@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 22:09+0000\n"
+"POT-Creation-Date: 2016-02-17 16:52+0000\n"
 "PO-Revision-Date: 2016-02-16 22:09+0000\n"
 "Last-Translator: Bruno Nova <brunomb.nova@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
@@ -17,10 +17,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: game.py:37
+#: menu.py:70
+msgid "Ball collisions: "
+msgstr "Colisões de bolas: "
+
+#: game.py:51
 msgid "Balls: {}"
 msgstr "Bolas: {}"
 
-#: game.py:36
+#: menu.py:37 menu.py:60
+msgid "Options"
+msgstr "Opções"
+
+#: menu.py:36
+msgid "Play"
+msgstr "Jogar"
+
+#: menu.py:38 menu.py:72
+msgid "Quit"
+msgstr "Sair"
+
+#: game.py:50
 msgid "Time: {}"
 msgstr "Tempo: {}"

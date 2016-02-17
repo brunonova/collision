@@ -19,6 +19,6 @@ if __name__ == "__main__":
 	pyglet.font.add_directory(os.path.join(path, "res"))
 
 	# Start game
-	director.init(caption="Collision", width=500, height=500)
+	director.init(caption="Collision", width=600, height=600)
 	# TODO: remove default handler
 	director.run(MenuScene())

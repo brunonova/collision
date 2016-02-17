@@ -10,3 +10,12 @@ xgettext --package-name=collision \
          -L Python \
          -s -o "po/collision.pot" \
          *.py
+
+# To create a .po:
+# $ msginit -i collision.pot -l LANG
+#
+# To update a .po:
+# $ msgmerge -U LANG.po collision.pot
+#
+# To compile a .po into an .mo:
+# $ msgfmt LANG.po
