@@ -1,10 +1,13 @@
-from cocos.actions import FadeOut
+from cocos.actions import FadeOut, CallFunc
 from cocos.collision_model import CollisionManagerGrid
+from cocos.director import director
+from cocos.euclid import Vector2
 from cocos.layer import Layer, ColorLayer
 from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
 
+import util
 from balls import *
 
 
@@ -93,7 +96,7 @@ class GameLayer(ColorLayer):
 			for j, other in enumerate(self.enemies):
 				if j > i and enemy.enabled and other.enabled \
 				   and self.collMan.they_collide(enemy, other):
-					self.bounceBalls(enemy, other)
+					Enemy.bounceBalls(enemy, other)
 
 		# Add a new enemy ball every 10 seconds
 		self.newEnemyTimer += dt
@@ -120,45 +123,6 @@ class GameLayer(ColorLayer):
 		for enemy in self.enemies:
 			enemy.enabled = False
 			enemy.stop()
-
-	def bounceBalls(self, b1: Enemy, b2: Enemy):
-		p1 = Vector2(b1.x, b1.y)
-		p2 = Vector2(b2.x, b2.y)
-		delta = p1 - p2
-		dist = util.distance(b1.x, b1.y, b2.x, b2.y)
-
-		if dist == 0:
-			dist = b1.radius * 2 - 1
-			delta = Vector2(b1.radius * 2, 0)
-		mtd = delta * (((b1.radius * 2) - dist) / dist)
-
-		im1 = im2 = 1  # inverse mass quantities
-
-		# Push-pull them appart
-		p1 += mtd * (im1 / (im1 + im2))
-		p2 -= mtd * (im2 / (im1 + im2))
-		b1.position = p1.x, p1.y
-		b2.position = p2.x, p2.y
-
-		# Impact speed
-		v = b1.speed - b2.speed
-		mtd.normalize()
-		vn = v.dot(mtd)
-
-		# Sphere intersecting but moving away from each other already
-		if vn > 0:
-			return
-
-		# Collision impulse
-		restitution = 1
-		i = (-(1 + restitution) * vn) / (im1 + im2)
-		impulse = mtd * i
-
-		# Change in momentum
-		b1.speed += impulse * im1
-		b2.speed -= impulse * im2
-
-		# TODO: Check borders
 
 	def getNumberOfEnemies(self):
 		return len(self.enemies)
