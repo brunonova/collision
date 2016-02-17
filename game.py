@@ -70,7 +70,10 @@ class GameLayer(ColorLayer):
 		self.enemies = []
 		self.isGameOver = False
 		self.schedule(self.update)
-		self.schedule_interval(self.addEnemyHandler, 10)  # add new enemy every 10 seconds
+
+		# Add new enemy every 10/15/20 seconds (depends on difficulty)
+		interval = (20, 15, 10)[self.options["difficulty"]]
+		self.schedule_interval(self.addEnemyHandler, interval)
 
 	def on_enter(self):
 		super().on_enter()
@@ -94,7 +97,9 @@ class GameLayer(ColorLayer):
 
 		@return: the added ball.
 		"""
-		enemy = Enemy(self.player.x, self.player.y)
+		# Ball speed depends on difficulty
+		speed = (200, 350, 500)[self.options["difficulty"]]
+		enemy = Enemy(self.player.x, self.player.y, speed)
 		self.enemies.append(enemy)
 		self.add(enemy)
 		return enemy

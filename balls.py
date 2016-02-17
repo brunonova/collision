@@ -81,17 +81,18 @@ class Player(Ball):
 class Enemy(Ball):
 	"""An enemy ball."""
 	SAFE_DISTANCE = 100  # minimum distance from the player when created
-	SPEED = 300  # initial speed of the ball
 
-	def __init__(self, playerX, playerY):
+	def __init__(self, playerX, playerY, initial_speed):
 		"""
 		Creates an enemy ball with a random position.
 
 		@param playerX: x position of the player ball.
 		@param playerY: y position of the player ball.
+		@param initial_speed: initial speed of the ball.
 		"""
 		super().__init__("enemy.png")
 		self.anchor = self.radius, self.radius
+		self._initialSpeed = initial_speed
 		self._setRandomPosition(playerX, playerY)
 		self.speed = Vector2(0, 0)
 		self.enabled = False  # whether the ball is moving and is collidable
@@ -164,12 +165,13 @@ class Enemy(Ball):
 
 	def _setRandomPosition(self, playerX, playerY):
 		while True:
-			x = random.randint(self.radius, director.window.width - self.radius)
-			y = random.randint(self.radius, director.window.height - self.radius)
+			width, height = director.get_window_size()
+			x = random.randint(self.radius, width - self.radius)
+			y = random.randint(self.radius, height - self.radius)
 			if util.distance(x, y, playerX, playerY) >= Enemy.SAFE_DISTANCE:
 				break
 		self.position = x, y
 		self.cshape.center = Vector2(x, y)
 
 	def _setRandomDirection(self):
-		self.speed = util.vectorFromAngle(random.random() * math.pi * 2, Enemy.SPEED)
+		self.speed = util.vectorFromAngle(random.random() * math.pi * 2, self._initialSpeed)
