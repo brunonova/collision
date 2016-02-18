@@ -1,4 +1,4 @@
-from cocos.actions import FadeOut, CallFunc
+from cocos.actions import FadeOut, CallFunc, FadeIn, Repeat
 from cocos.collision_model import CollisionManagerGrid
 from cocos.director import director
 from cocos.euclid import Vector2
@@ -207,6 +207,7 @@ class PauseLayer(ColorLayer):
 		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
 		               color=constants.FONT_COLOR, anchor_x="center", anchor_y="center")
 		paused.position = width // 2, height // 2
+		paused.do(Repeat(FadeOut(0.3) + FadeIn(0.3)))
 		self.add(paused)
 
 	def on_key_press(self, key, modifiers):
