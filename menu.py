@@ -4,11 +4,10 @@ from cocos.layer import ColorLayer, MultiplexLayer
 from cocos.menu import Menu, MenuItem, ToggleMenuItem, MultipleMenuItem
 from cocos.scene import Scene
 from gettext import gettext as _
-
 from pyglet.window import key
 
-import constants
 from game import GameScene
+from options import Options
 
 
 class MenuScene(Scene):
@@ -16,7 +15,7 @@ class MenuScene(Scene):
 	def __init__(self):
 		menuLayer = MenuLayer()
 		optionsLayer = OptionsLayer(menuLayer)
-		super().__init__(ColorLayer(*constants.BACKGROUND_COLOR),
+		super().__init__(ColorLayer(*Options.BACKGROUND_COLOR),
 						 MultiplexLayer(menuLayer, optionsLayer))
 
 
@@ -24,11 +23,11 @@ class CustomizedMenu(Menu):
 	"""The same as the Menu class, but with custom fonts."""
 	def __init__(self, title=""):
 		super().__init__(title)
-		self.font_title["color"] = constants.FONT_COLOR
+		self.font_title["color"] = Options.FONT_COLOR
 		self.font_title["font_name"] = "Ubuntu"
-		self.font_item["color"] = constants.FONT_COLOR_NOT_SELECTED
+		self.font_item["color"] = Options.FONT_COLOR_NOT_SELECTED
 		self.font_item["font_name"] = "Ubuntu"
-		self.font_item_selected["color"] = constants.FONT_COLOR
+		self.font_item_selected["color"] = Options.FONT_COLOR
 		self.font_item_selected["font_name"] = "Ubuntu"
 		self.font_item_selected["font_size"] = self.font_item["font_size"]
 		self.font_item_selected["bold"] = True
@@ -40,11 +39,7 @@ class MenuLayer(CustomizedMenu):
 		super().__init__("Collision")
 
 		# Initialize game options
-		self.options = {
-			"type": constants.TIME,
-			"difficulty": constants.MEDIUM,
-			"ballsCollide": True
-		}
+		self.options = Options()
 
 		# Add the items and create the menu
 		items = [
@@ -78,25 +73,26 @@ class OptionsLayer(CustomizedMenu):
 		# Add the items and create the menu
 		items = [
 			MultiMenuItem(_("Type: "), self.onType,
-			              [_("Time"), _("Coins")], constants.TIME),
+			              [_("Time"), _("Coins")], self.menuLayer.options.type),
 			MultiMenuItem(_("Difficulty: "), self.onDifficulty,
-			              [_("Easy"), _("Medium"), _("Hard")], constants.MEDIUM),
-			ToggleMenuItem(_("Ball collisions: "), self.onBallsCollide,
-			               self.menuLayer.options["ballsCollide"]),
+			              [_("Easy"), _("Medium"), _("Hard")],
+			              self.menuLayer.options.difficulty),
+			ToggleMenuItem(_("Balls collide: "), self.onBallsCollide,
+			               self.menuLayer.options.ballsCollide),
 			ToggleMenuItem(_("Full screen: "), self.onFullscreen,
 			               director.window.fullscreen),
-			MenuItem(_("Back"), self.on_quit)
+			MenuItem(_("< Back"), self.on_quit)
 		]
 		self.create_menu(items)
 
 	def onType(self, index):
-		self.menuLayer.options["type"] = index
+		self.menuLayer.options.type = index
 
 	def onDifficulty(self, index):
-		self.menuLayer.options["difficulty"] = index
+		self.menuLayer.options.difficulty = index
 
 	def onBallsCollide(self, value):
-		self.menuLayer.options["ballsCollide"] = value
+		self.menuLayer.options.ballsCollide = value
 
 	def onFullscreen(self, value):
 		director.window.set_fullscreen(value)

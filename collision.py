@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import gettext, os, pyglet
-from cocos.director import director, DefaultHandler
+from cocos.director import director
 from menu import MenuScene
 
 
