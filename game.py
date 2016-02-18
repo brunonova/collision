@@ -49,9 +49,8 @@ class HUDLayer(Layer):
 	def update(self, dt):
 		if not self.gameLayer.isGameOver:
 			if self.gameLayer.options["type"] == constants.TIME:
-				if not self.gameLayer.paused:
-					self.time += dt
-					self.score.element.text = _("Time: {}").format(int(self.time))
+				self.time += dt
+				self.score.element.text = _("Time: {}").format(int(self.time))
 			else:
 				self.score.element.text = _("Coins: {}").format(self.gameLayer.coins)
 			self.enemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
@@ -71,22 +70,14 @@ class GameLayer(ColorLayer):
 
 		self.options = options
 		self.keysPressed = set()
-		self.player = self.coin = None
 		self.enemies = []
 		self.isGameOver = False
-		self.paused = False
 		self.coins = 0
-		self.timerAddEnemy = 0
-		# Interval between enemy balls additions (depends on difficulty)
-		self.intervalAddEnemy = (20, 15, 10)[self.options["difficulty"]]
 		self.mouseDelta = Vector2(0, 0)
 
-		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
-		self.schedule(self.update)
-
-	def on_enter(self):
-		super().on_enter()
-		director.window.set_exclusive_mouse(True)  # "grab" the mouse
+		# Interval between enemy balls additions (depends on difficulty)
+		self.intervalAddEnemy = (20, 15, 10)[self.options["difficulty"]]
+		self.timerAddEnemy = 0
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -101,6 +92,13 @@ class GameLayer(ColorLayer):
 			# Create coin
 			self.coin = Coin(self.player.x, self.player.y)
 			self.add(self.coin, z=0.1)
+
+		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
+		self.schedule(self.update)
+
+	def on_enter(self):
+		super().on_enter()
+		director.window.set_exclusive_mouse(True)  # "grab" the mouse
 
 	def on_exit(self):
 		super().on_exit()
@@ -136,21 +134,7 @@ class GameLayer(ColorLayer):
 	def pauseGame(self):
 		"""Pauses or unpauses the game."""
 		if not self.isGameOver:
-			self.paused = not self.paused
-			if self.paused:
-				self.add(PauseLayer(), name="pauseLayer", z=1)
-				self.pause_scheduler()
-				for enemy in self.enemies:
-					enemy.pause()
-				if self.options["type"] == constants.COINS:
-					self.coin.pause()
-			else:
-				self.remove("pauseLayer")
-				self.resume_scheduler()
-				for enemy in self.enemies:
-					enemy.resume()
-				if self.options["type"] == constants.COINS:
-					self.coin.resume()
+			director.push(Scene(PauseLayer()))
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -209,16 +193,22 @@ class GameLayer(ColorLayer):
 			self.keysPressed.remove(key)
 
 	def on_mouse_motion(self, x, y, dx, dy):
-		if not self.paused:
-			self.mouseDelta += Vector2(dx, dy)
+		self.mouseDelta += Vector2(dx, dy)
 
 
 class PauseLayer(ColorLayer):
+	"""Layer that shows "PAUSE"."""
+	is_event_handler = True
+
 	def __init__(self):
-		super().__init__(0, 0, 0, 128)
+		super().__init__(*constants.BACKGROUND_COLOR)
 
 		width, height = director.get_window_size()
 		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
-		               color=(255, 255, 255, 255), anchor_x="center", anchor_y="center")
+		               color=constants.FONT_COLOR, anchor_x="center", anchor_y="center")
 		paused.position = width // 2, height // 2
 		self.add(paused)
+
+	def on_key_press(self, key, modifiers):
+		if key in (window.key.P, window.key.PAUSE):
+			director.pop()
