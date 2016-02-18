@@ -11,6 +11,8 @@ from pyglet import window
 from pyglet.gl import GL_TEXTURE_2D, GL_RGBA
 from pyglet.image import Texture
 
+import util
+
 
 class PauseScene(Scene):
 	"""
@@ -26,8 +28,9 @@ class PauseScene(Scene):
 
 	@staticmethod
 	def create():
+		"""Creates and returns the Pause scene."""
 		# "Take a screenshot" and pass it to the scene
-		width, height = director.window.width, director.window.height
+		width, height = util.getWindowUsableSize()
 		texture = Texture.create_for_size(GL_TEXTURE_2D, width, height, GL_RGBA)
 		texture.blit_into(pyglet.image.get_buffer_manager().get_color_buffer(), 0, 0, 0)
 		return PauseScene(texture.get_region(0, 0, width, height))
@@ -51,7 +54,8 @@ class PauseLayer(ColorLayer):
 	def draw(self):
 		# Draw the screenshot as the background
 		if self.background:
-			self.background.blit(0, 0, width=self.width, height=self.height)
+			width, height = director.get_window_size()
+			self.background.blit(0, 0, width=width, height=height)
 		super().draw()
 
 	def on_key_press(self, key, modifiers):

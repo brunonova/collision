@@ -1,4 +1,6 @@
 import math
+
+from cocos.director import director
 from cocos.euclid import Vector2
 
 
@@ -23,3 +25,31 @@ def vectorFromAngle(angle, length=1):
 	@return: the created vector
 	"""
 	return Vector2(math.cos(angle), math.sin(angle)) * length
+
+def getWindowUsableSize():
+	"""
+	Determines and returns the usable size of the window.
+
+	When the window is resized into a different aspect ratio (like when
+	fullscreen is enabled), the game layers will preserve the aspect ration, but
+	the window will have two vertical black bars.
+	These bars are included in director.window.width, which may not be the
+	intended behavior.
+
+	@return: a tuple with the usable size (width, height).
+	"""
+	# Original and virtual window size and aspect ratio
+	virtualSize = director.get_window_size()
+	virtualRatio = virtualSize[0] / virtualSize[1]
+
+	# Real window size and aspect ration
+	realSize = director.window.width, director.window.height
+	realRatio = realSize[0] / realSize[1]
+
+	# Determine the usable size
+	if realRatio == virtualRatio:  # same aspect ration
+		return realSize
+	elif realRatio > virtualRatio:  # real window is wider than virtual window
+		return int(realSize[1] * virtualRatio), realSize[1]
+	else:  # real window is taller than virtual window
+		return realSize[0], int(realSize[0] / virtualRatio)
