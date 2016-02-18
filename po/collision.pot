@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 11:23+0000\n"
+"POT-Creation-Date: 2016-02-18 14:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,70 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: menu.py:85
+#: menu.py:86
 msgid "< Back"
 msgstr ""
 
-#: menu.py:81
+#: menu.py:82
 msgid "Balls collide: "
 msgstr ""
 
-#: game.py:56
+#: game.py:57
 msgid "Balls: {}"
 msgstr ""
 
-#: menu.py:77 options.py:7
+#: menu.py:78 options.py:7
 msgid "Coins"
 msgstr ""
 
-#: game.py:55
+#: game.py:56
 msgid "Coins: {}"
 msgstr ""
 
-#: menu.py:78
+#: menu.py:79
 msgid "Difficulty: "
 msgstr ""
 
-#: menu.py:79 options.py:8
+#: menu.py:80 options.py:8
 msgid "Easy"
 msgstr ""
 
-#: menu.py:83
+#: menu.py:84
 msgid "Full screen: "
 msgstr ""
 
-#: menu.py:79 options.py:8
+#: menu.py:80 options.py:8
 msgid "Hard"
 msgstr ""
 
-#: menu.py:79 options.py:8
+#: menu.py:80 options.py:8
 msgid "Medium"
 msgstr ""
 
-#: menu.py:48 menu.py:71
+#: menu.py:49 menu.py:72
 msgid "Options"
 msgstr ""
 
-#: game.py:207
+#: pause.py:48
 msgid "PAUSE"
 msgstr ""
 
-#: menu.py:47
+#: menu.py:48
 msgid "Play"
 msgstr ""
 
-#: menu.py:49
+#: menu.py:50
 msgid "Quit"
 msgstr ""
 
-#: menu.py:77 options.py:7
+#: menu.py:78 options.py:7
 msgid "Time"
 msgstr ""
 
-#: game.py:53
+#: game.py:54
 msgid "Time: {}"
 msgstr ""
 
-#: menu.py:76
+#: menu.py:77
 msgid "Type: "
 msgstr ""

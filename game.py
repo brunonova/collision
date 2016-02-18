@@ -1,4 +1,4 @@
-from cocos.actions import FadeOut, CallFunc, FadeIn, Repeat
+from cocos.actions import FadeOut, CallFunc
 from cocos.collision_model import CollisionManagerGrid
 from cocos.director import director
 from cocos.euclid import Vector2
