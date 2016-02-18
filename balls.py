@@ -99,6 +99,7 @@ class Player(Ball):
 class Enemy(Ball):
 	"""An enemy ball."""
 	PLAYER_DISTANCE = 100  # minimum distance from the player when created
+	MASS = 1  # mass of the ball (used when balls collide)
 
 	def __init__(self, playerX, playerY, initial_speed):
 		"""
@@ -113,6 +114,7 @@ class Enemy(Ball):
 		self._initialSpeed = initial_speed
 		self.setRandomPosition(playerX, playerY, Enemy.PLAYER_DISTANCE)
 		self.speed = Vector2(0, 0)
+		self.mass = Enemy.MASS
 		self.enabled = False  # whether the ball is moving and is collidable
 		self.opacity = 0
 		self.do(FadeIn(1) + CallFunc(self._enable))
@@ -141,20 +143,21 @@ class Enemy(Ball):
 		p1 = Vector2(b1.x, b1.y)
 		p2 = Vector2(b2.x, b2.y)
 		delta = p1 - p2
-		dist = util.distance(b1.x, b1.y, b2.x, b2.y)
+		dist = delta.magnitude()
 
-		if dist == 0:
-			dist = b1.radius * 2 - 1
-			delta = Vector2(b1.radius * 2, 0)
-		mtd = delta * (((b1.radius * 2) - dist) / dist)
+		if dist == 0:  # prevent a possible division by zero
+			dist = b1.radius + b2.radius - 1
+			delta = Vector2(b1.radius + b2.radius, 0)
 
-		im1 = im2 = 1  # inverse mass quantities
+		# Minimum Translation Distance to push balls apart after the collision
+		mtd = delta * ((b1.radius + b2.radius - dist) / dist)
 
-		# Push-pull them appart
-		p1 += mtd * (im1 / (im1 + im2))
-		p2 -= mtd * (im2 / (im1 + im2))
-		b1.position = p1.x, p1.y
-		b2.position = p2.x, p2.y
+		# Inverse mass quantities
+		im1, im2 = 1 / b1.mass, 1 / b2.mass
+
+		# Push-pull them apart
+		b1.position += mtd * (im1 / (im1 + im2))
+		b2.position -= mtd * (im2 / (im1 + im2))
 
 		# Ensure the balls are still inside the window
 		b1.ensureWithinBorders()
@@ -162,8 +165,7 @@ class Enemy(Ball):
 
 		# Impact speed
 		v = b1.speed - b2.speed
-		mtd.normalize()
-		vn = v.dot(mtd)
+		vn = v.dot(mtd.normalize())
 
 		# Sphere intersecting but moving away from each other already
 		if vn > 0:
