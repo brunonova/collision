@@ -1,9 +1,11 @@
+from gettext import gettext as _
+
 import pyglet
 from cocos.director import director
 from cocos.layer import ColorLayer, MultiplexLayer
-from cocos.menu import Menu, MenuItem, ToggleMenuItem, MultipleMenuItem
+from cocos.menu import Menu, MenuItem, ToggleMenuItem, MultipleMenuItem, \
+	shake, shake_back
 from cocos.scene import Scene
-from gettext import gettext as _
 from pyglet.window import key
 
 from game import GameScene
@@ -47,7 +49,7 @@ class MenuLayer(CustomizedMenu):
 			MenuItem(_("Options"), self.onOptions),
 			MenuItem(_("Quit"), self.on_quit)
 		]
-		self.create_menu(items)
+		self.create_menu(items, shake(), shake_back())
 
 	def onPlay(self):
 		director.push(GameScene(self.options))
@@ -83,7 +85,7 @@ class OptionsLayer(CustomizedMenu):
 			               director.window.fullscreen),
 			MenuItem(_("< Back"), self.on_quit)
 		]
-		self.create_menu(items)
+		self.create_menu(items, shake(), shake_back())
 
 	def onType(self, index):
 		self.menuLayer.options.type = index
