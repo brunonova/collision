@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-17 16:52+0000\n"
+"POT-Creation-Date: 2016-02-18 00:10+0000\n"
 "PO-Revision-Date: 2016-02-16 22:09+0000\n"
 "Last-Translator: Bruno Nova <brunomb.nova@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
@@ -17,26 +17,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: menu.py:70
-msgid "Ball collisions: "
-msgstr "Colisões de bolas: "
+#: menu.py:86
+msgid "Back"
+msgstr "Voltar"
 
-#: game.py:51
+#: menu.py:84
+msgid "Ball collisions: "
+msgstr "Colisões entre bolas: "
+
+#: game.py:56
 msgid "Balls: {}"
 msgstr "Bolas: {}"
 
-#: menu.py:37 menu.py:60
+#: menu.py:81
+msgid "Coins"
+msgstr "Moedas"
+
+#: game.py:55
+msgid "Coins: {}"
+msgstr "Moedas: {}"
+
+#: menu.py:82
+msgid "Difficulty: "
+msgstr "Dificuldade: "
+
+#: menu.py:83
+msgid "Easy"
+msgstr "Fácil"
+
+#: menu.py:83
+msgid "Hard"
+msgstr "Difícil"
+
+#: menu.py:83
+msgid "Medium"
+msgstr "Médio"
+
+#: menu.py:52 menu.py:75
 msgid "Options"
 msgstr "Opções"
 
-#: menu.py:36
+#: game.py:207
+msgid "PAUSE"
+msgstr "PAUSE"
+
+#: menu.py:51
 msgid "Play"
 msgstr "Jogar"
 
-#: menu.py:38 menu.py:72
+#: menu.py:53
 msgid "Quit"
 msgstr "Sair"
 
-#: game.py:50
+#: menu.py:81
+msgid "Time"
+msgstr "Tempo"
+
+#: game.py:53
 msgid "Time: {}"
 msgstr "Tempo: {}"
+
+#: menu.py:80
+msgid "Type: "
+msgstr "Tipo: "
