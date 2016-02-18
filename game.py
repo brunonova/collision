@@ -157,7 +157,7 @@ class GameLayer(ColorLayer):
 					# Move the coin to a random position
 					self.coin.setRandomPosition(self.player.x, self.player.y,
 					                            Coin.PLAYER_DISTANCE)
-					if self.coins % self.options.getCoinsAddEnemy():
+					if self.coins % self.options.getCoinsAddEnemy() == 0:
 						self.addEnemy()  # add an enemy every N coins
 
 			# Check collisions between player and enemies
