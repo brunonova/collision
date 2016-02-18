@@ -10,6 +10,7 @@ from pyglet import window
 
 from balls import *
 from options import Options
+from pause import PauseScene
 
 
 class GameScene(Scene):
@@ -129,9 +130,9 @@ class GameLayer(ColorLayer):
 		return len(self.enemies)
 
 	def pauseGame(self):
-		"""Pauses or unpauses the game."""
+		"""Pauses the game."""
 		if not self.isGameOver:
-			director.push(Scene(PauseLayer()))
+			director.push(PauseScene.create())
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -190,22 +191,3 @@ class GameLayer(ColorLayer):
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		self.mouseDelta += Vector2(dx, dy)
-
-
-class PauseLayer(ColorLayer):
-	"""Layer that shows "PAUSE"."""
-	is_event_handler = True
-
-	def __init__(self):
-		super().__init__(*Options.BACKGROUND_COLOR)
-
-		width, height = director.get_window_size()
-		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
-		               color=Options.FONT_COLOR, anchor_x="center", anchor_y="center")
-		paused.position = width // 2, height // 2
-		paused.do(Repeat(FadeOut(0.3) + FadeIn(0.3)))
-		self.add(paused)
-
-	def on_key_press(self, key, modifiers):
-		if key in (window.key.P, window.key.PAUSE):
-			director.pop()
