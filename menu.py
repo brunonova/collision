@@ -83,6 +83,8 @@ class OptionsLayer(CustomizedMenu):
 			              [_("Easy"), _("Medium"), _("Hard")], constants.MEDIUM),
 			ToggleMenuItem(_("Ball collisions: "), self.onBallsCollide,
 			               self.menuLayer.options["ballsCollide"]),
+			ToggleMenuItem(_("Full screen: "), self.onFullscreen,
+			               director.window.fullscreen),
 			MenuItem(_("Back"), self.on_quit)
 		]
 		self.create_menu(items)
@@ -95,6 +97,9 @@ class OptionsLayer(CustomizedMenu):
 
 	def onBallsCollide(self, value):
 		self.menuLayer.options["ballsCollide"] = value
+
+	def onFullscreen(self, value):
+		director.window.set_fullscreen(value)
 
 	def on_quit(self):
 		self.parent.switch_to(0)

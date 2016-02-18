@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import gettext, os, pyglet
-from cocos.director import director
-
+from cocos.director import director, DefaultHandler
 from menu import MenuScene
 
 
@@ -21,4 +20,5 @@ if __name__ == "__main__":
 	# Start game
 	director.init(caption="Collision", width=600, height=600)
 	# TODO: remove default handler
+	#director.window.pop_handlers()
 	director.run(MenuScene())
