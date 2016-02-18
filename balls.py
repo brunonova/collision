@@ -123,9 +123,10 @@ class Enemy(Ball):
 			self.position += self.speed * dt
 
 			# Check borders
-			if self.x < self.radius or self.x > director.window.width - self.radius:
+			width, height = director.get_window_size()
+			if self.x < self.radius or self.x > width - self.radius:
 				self.speed.x = -self.speed.x
-			if self.y < self.radius or self.y > director.window.height - self.radius:
+			if self.y < self.radius or self.y > height - self.radius:
 				self.speed.y = -self.speed.y
 			self.ensureWithinBorders()
 
