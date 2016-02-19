@@ -1,15 +1,14 @@
-from gettext import gettext as _
-
 import pyglet
 from cocos.director import director
 from cocos.layer import ColorLayer, MultiplexLayer
 from cocos.menu import Menu, MenuItem, ToggleMenuItem, MultipleMenuItem, \
-	shake, shake_back
+     shake, shake_back
 from cocos.scene import Scene
+from gettext import gettext as _
 from pyglet.window import key
 
-from game import GameScene
-from options import Options
+from ..options import Options
+from .game import GameScene
 
 
 class MenuScene(Scene):

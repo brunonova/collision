@@ -8,9 +8,9 @@ from cocos.text import Label
 from gettext import gettext as _
 from pyglet import window
 
-from balls import *
-from options import Options
-from pause import PauseScene
+from ..options import Options
+from .pause import PauseScene
+from ..balls import *
 
 
 class GameScene(Scene):

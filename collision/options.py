@@ -1,5 +1,6 @@
 from gettext import gettext as _
 
+
 class Options:
 	"""Holds the game options."""
 

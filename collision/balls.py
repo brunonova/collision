@@ -1,14 +1,12 @@
-import math
-import random
-from cocos.actions import CallFunc
-from cocos.actions import FadeIn
+import math, random
+from cocos.actions import CallFunc, FadeIn
 from cocos.collision_model import CircleShape
 from cocos.director import director
 from cocos.euclid import Vector2
 from cocos.sprite import Sprite
 from pyglet import window
 
-import util
+from . import util
 
 __all__ = ["Player", "Enemy", "Coin"]
 

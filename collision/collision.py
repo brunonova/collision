@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
 import gettext, os, pyglet
 from cocos.director import director
-from menu import MenuScene
+
+from .scenes.menu import MenuScene
 
 
-if __name__ == "__main__":
+def startGame():
+	"""Starts the game."""
 	# Find directory path
 	path = os.path.dirname(os.path.abspath(__file__))
 

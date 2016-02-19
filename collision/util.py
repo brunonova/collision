@@ -1,5 +1,4 @@
 import math
-
 from cocos.director import director
 from cocos.euclid import Vector2
 

@@ -1,17 +1,15 @@
 import pyglet
-from cocos.actions import FadeIn
-from cocos.actions import Repeat, FadeOut
+from cocos.actions import FadeIn, FadeOut, Repeat
 from cocos.director import director
 from cocos.layer import ColorLayer
 from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
-
 from pyglet import window
 from pyglet.gl import GL_TEXTURE_2D, GL_RGBA
 from pyglet.image import Texture
 
-import util
+from .. import util
 
 
 class PauseScene(Scene):

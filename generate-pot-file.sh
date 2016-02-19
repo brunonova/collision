@@ -8,8 +8,8 @@ xgettext --package-name=collision \
          --copyright-holder='Bruno Nova <brunomb.nova@gmail.com>' \
          -cTRANSLATORS \
          -L Python \
-         -s -o "po/collision.pot" \
-         *.py
+         -s -o "collision/po/collision.pot" \
+         collision/*.py collision/scenes/*.py
 
 # To create a .po:
 # $ msginit -i collision.pot -l $LANG
@@ -18,4 +18,4 @@ xgettext --package-name=collision \
 # $ msgmerge -U $LANG.po collision.pot
 #
 # To compile a .po into an .mo:
-# $ msgfmt $LANG.po -o ../mo/$LANG/LC_MESSAGES/collision.mo
+# $ msgfmt $LANG.po -o ../collision/mo/$LANG/LC_MESSAGES/collision.mo
