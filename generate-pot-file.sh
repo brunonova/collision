@@ -8,7 +8,7 @@ xgettext --package-name=collision \
          --copyright-holder='Bruno Nova <brunomb.nova@gmail.com>' \
          -cTRANSLATORS \
          -L Python \
-         -s -o "collision/po/collision.pot" \
+         -s -o "po/collision.pot" \
          collision/*.py collision/scenes/*.py
 
 # To create a .po:
