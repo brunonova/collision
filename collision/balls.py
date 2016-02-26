@@ -1,4 +1,6 @@
 import math, random
+
+import pyglet
 from cocos.actions import CallFunc, FadeIn
 from cocos.collision_model import CircleShape
 from cocos.director import director
@@ -16,7 +18,14 @@ class Ball(Sprite):
 
 	def __init__(self, image, *args, **kwargs):
 		super().__init__(image, *args, **kwargs)
-		self.radius = self.image.width // 2  # radius of the ball
+
+		# Determine if the image is a simple image or an Animation
+		if isinstance(image, pyglet.image.Animation):
+			realImage = image.frames[0].image  # it's an animation
+		else:
+			realImage = self.image  # it's an image
+
+		self.radius = realImage.width // 2  # radius of the ball
 		self.cshape = CircleShape(Vector2(self.x, self.y), self.radius)
 
 	def ensureWithinBorders(self):
@@ -197,7 +206,7 @@ class Coin(Ball):
 		@param playerX: x position of the player ball.
 		@param playerY: y position of the player ball.
 		"""
-		super().__init__("coin.png")
+		super().__init__(Coin._loadAnimation())
 		self.anchor = self.radius, self.radius
 		self.setRandomPosition(playerX, playerY, Coin.PLAYER_DISTANCE)
 		self.enabled = False  # whether the coin can be catched
@@ -206,3 +215,10 @@ class Coin(Ball):
 
 	def _enable(self):
 		self.enabled = True
+
+	@staticmethod
+	def _loadAnimation():
+		sheet = pyglet.resource.image("coin.png")
+		grid = pyglet.image.ImageGrid(sheet, 1, 61)
+		textures = pyglet.image.TextureGrid(grid)
+		return pyglet.image.Animation.from_image_sequence(textures, 0.02)
