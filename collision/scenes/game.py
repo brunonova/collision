@@ -78,10 +78,12 @@ class GameLayer(ColorLayer):
 		self.isGameOver = False
 		self.coins = 0
 		self.mouseDelta = Vector2(0, 0)
+
+		# Set timers (all timers count down)
 		self.intervalAddEnemy = options.getIntervalAddEnemy()
-		self.timerAddEnemy = 0  # timer to add new enemy, counts up
-		self.timerShowBonus = random.randint(3, 10)  # timer to show bonus, counts down
-		self.timerSpeedDown = 0  # timer to stop the speed down bonus, counts down
+		self.timerAddEnemy = self.intervalAddEnemy  # timer to add new enemy
+		self.timerShowBonus = random.randint(3, 10)  # timer to show bonus
+		self.timerSpeedDown = 0  # timer to stop the speed down bonus
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -207,9 +209,9 @@ class GameLayer(ColorLayer):
 
 			if self.options.isTime():
 				# Count time to add a new enemy ball
-				self.timerAddEnemy += dt
-				if self.timerAddEnemy >= self.intervalAddEnemy:
-					self.timerAddEnemy -= self.intervalAddEnemy
+				self.timerAddEnemy -= dt
+				if self.timerAddEnemy <= 0:
+					self.timerAddEnemy += self.intervalAddEnemy
 					self.addEnemy()
 
 			# Count down bonus timers
