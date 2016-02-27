@@ -26,6 +26,7 @@ class Ball(Sprite):
 			realImage = self.image  # it's an image
 
 		self.radius = realImage.width // 2  # radius of the ball
+		self.anchor = self.radius, self.radius
 		self.cshape = CircleShape(Vector2(self.x, self.y), self.radius)
 
 	def ensureWithinBorders(self):
@@ -69,7 +70,6 @@ class Player(Ball):
 		@param y: initial y position of the ball.
 		"""
 		super().__init__("player.png")
-		self.anchor = self.radius, self.radius
 		self.position = x, y  # WARNING: position is a tuple, not a vector!
 		self.cshape.center = Vector2(x, y)  # the center must be a Vector2!
 
@@ -117,7 +117,6 @@ class Enemy(Ball):
 		@param initial_speed: initial speed of the ball.
 		"""
 		super().__init__("enemy.png")
-		self.anchor = self.radius, self.radius
 		self._initialSpeed = initial_speed
 		self.setRandomPosition(playerX, playerY, Enemy.PLAYER_DISTANCE)
 		self.speed = Vector2(0, 0)
@@ -126,10 +125,10 @@ class Enemy(Ball):
 		self.opacity = 0
 		self.do(FadeIn(1) + CallFunc(self._enable))
 
-	def update(self, dt):
+	def update(self, dt, factor):
 		if self.enabled:
 			# Move ball
-			self.position += self.speed * dt
+			self.position += self.speed * dt * factor
 
 			# Check borders
 			width, height = director.get_window_size()
@@ -207,9 +206,8 @@ class Coin(Ball):
 		@param playerY: y position of the player ball.
 		"""
 		super().__init__(Coin._loadAnimation())
-		self.anchor = self.radius, self.radius
 		self.setRandomPosition(playerX, playerY, Coin.PLAYER_DISTANCE)
-		self.enabled = False  # whether the coin can be catched
+		self.enabled = False  # whether the coin can be caught
 		self.opacity = 0
 		self.do(FadeIn(1) + CallFunc(self._enable))
 
@@ -222,3 +220,34 @@ class Coin(Ball):
 		grid = pyglet.image.ImageGrid(sheet, 1, 61)
 		textures = pyglet.image.TextureGrid(grid)
 		return pyglet.image.Animation.from_image_sequence(textures, 0.02)
+
+
+class Bonus(Ball):
+	"""A bonus that gives the player an advantage or a disadvantage when caught."""
+	PLAYER_DISTANCE = 200  # minimum distance from the player when created
+
+	def __init__(self):
+		"""Creates a bonus (disabled and hidden)."""
+		super().__init__("bonus.png")
+		self.enabled = False  # whether the bonus can be caught
+		self.opacity = 0
+
+	def show(self, playerX, playerY):
+		"""
+		Shows the bonus and enables it.
+
+		@param playerX: x position of the player ball.
+		@param playerY: y position of the player ball.
+		"""
+		if not self.enabled:
+			self.setRandomPosition(playerX, playerY, Bonus.PLAYER_DISTANCE)
+			self.enabled = True
+			self.opacity = 0
+			self.do(FadeIn(0.5))
+
+	def hide(self):
+		"""Hides the bonus and disables it."""
+		if self.enabled:
+			self.enabled = False
+			self.opacity = 0
+			self.stop()

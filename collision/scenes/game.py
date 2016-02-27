@@ -1,3 +1,5 @@
+import random
+
 from cocos.actions import FadeOut, CallFunc
 from cocos.collision_model import CollisionManagerGrid
 from cocos.director import director
@@ -8,6 +10,7 @@ from cocos.text import Label
 from gettext import gettext as _
 from pyglet import window
 
+from collision.balls import Bonus
 from ..options import Options
 from .pause import PauseScene
 from ..balls import *
@@ -76,12 +79,14 @@ class GameLayer(ColorLayer):
 		self.coins = 0
 		self.mouseDelta = Vector2(0, 0)
 		self.intervalAddEnemy = options.getIntervalAddEnemy()
-		self.timerAddEnemy = 0
+		self.timerAddEnemy = 0  # timer to add new enemy, counts up
+		self.timerShowBonus = random.randint(3, 10)  # timer to show bonus, counts down
+		self.timerSpeedDown = 0  # timer to stop the speed down bonus, counts down
 
 		# Create player ball
 		width, height = director.get_window_size()
 		self.player = Player(width // 2, height // 2)
-		self.add(self.player)
+		self.add(self.player, z=0.3)
 
 		# Create enemy balls
 		for x in range(3):
@@ -90,7 +95,12 @@ class GameLayer(ColorLayer):
 		if self.options.isCoins():
 			# Create coin
 			self.coin = Coin(self.player.x, self.player.y)
-			self.add(self.coin, z=0.1)
+			self.add(self.coin, z=0.2)
+
+		if self.options.bonuses:
+			# Create bonus
+			self.bonus = Bonus()
+			self.add(self.bonus, z=0.0)
 
 		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
 		self.schedule(self.update)
@@ -112,7 +122,7 @@ class GameLayer(ColorLayer):
 		speed = self.options.getEnemySpeed()
 		enemy = Enemy(self.player.x, self.player.y, speed)
 		self.enemies.append(enemy)
-		self.add(enemy)
+		self.add(enemy, z=0.1)
 		return enemy
 
 	def gameOver(self):
@@ -134,6 +144,14 @@ class GameLayer(ColorLayer):
 		if not self.isGameOver:
 			director.push(PauseScene.create())
 
+	def giveBonus(self):
+		"""Gives a random advantage or disadvantage to the player."""
+		self.bonus.hide()
+		self.timerSpeedDown = 8
+
+	def isSpeedDown(self):
+		return self.timerSpeedDown > 0
+
 	def update(self, dt):
 		if not self.isGameOver:
 			self.collMan.clear()
@@ -144,8 +162,9 @@ class GameLayer(ColorLayer):
 			self.collMan.add(self.player)
 
 			# Update enemy balls
+			factor = 0.5 if self.isSpeedDown() else 1.0
 			for enemy in self.enemies:
-				enemy.update(dt)
+				enemy.update(dt, factor)
 				if enemy.enabled:
 					self.collMan.add(enemy)
 
@@ -160,6 +179,12 @@ class GameLayer(ColorLayer):
 					if self.coins % self.options.getCoinsAddEnemy() == 0:
 						self.addEnemy()  # add an enemy every N coins
 
+			# Check collision between player and bonus
+			if self.options.bonuses and self.bonus.enabled:
+				self.collMan.add(self.bonus)
+				if self.collMan.they_collide(self.player, self.bonus):
+					self.giveBonus()
+
 			# Check collisions between player and enemies
 			for enemy in self.enemies:
 				if enemy.enabled and self.collMan.they_collide(self.player, enemy):
@@ -173,12 +198,23 @@ class GameLayer(ColorLayer):
 						   and self.collMan.they_collide(enemy, other):
 							Enemy.bounceBalls(enemy, other)
 
+			if self.options.bonuses and not self.bonus.enabled:
+				# Count down time to add show the bonus
+				self.timerShowBonus -= dt
+				if self.timerShowBonus <= 0:
+					self.timerShowBonus += random.randint(3, 10)
+					self.bonus.show(self.player.x, self.player.y)
+
 			if self.options.isTime():
-				# Add new enemy every "intervalAddEnemy" seconds
+				# Count time to add a new enemy ball
 				self.timerAddEnemy += dt
 				if self.timerAddEnemy >= self.intervalAddEnemy:
 					self.timerAddEnemy -= self.intervalAddEnemy
 					self.addEnemy()
+
+			# Count down bonus timers
+			if self.timerSpeedDown > 0:
+				self.timerSpeedDown -= dt
 
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)

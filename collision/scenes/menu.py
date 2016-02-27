@@ -78,6 +78,8 @@ class OptionsLayer(CustomizedMenu):
 			MultiMenuItem(_("Difficulty: "), self.onDifficulty,
 			              [_("Easy"), _("Medium"), _("Hard")],
 			              self.menuLayer.options.difficulty),
+			ToggleMenuItem(_("Bonuses: "), self.onBonuses,
+			               self.menuLayer.options.bonuses),
 			ToggleMenuItem(_("Balls collide: "), self.onBallsCollide,
 			               self.menuLayer.options.ballsCollide),
 			ToggleMenuItem(_("Full screen: "), self.onFullscreen,
@@ -91,6 +93,9 @@ class OptionsLayer(CustomizedMenu):
 
 	def onDifficulty(self, index):
 		self.menuLayer.options.difficulty = index
+
+	def onBonuses(self, value):
+		self.menuLayer.options.bonuses = value
 
 	def onBallsCollide(self, value):
 		self.menuLayer.options.ballsCollide = value

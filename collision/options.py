@@ -26,6 +26,7 @@ class Options:
 		self.type = Options.TIME
 		self.difficulty = Options.MEDIUM
 		self.ballsCollide = True
+		self.bonuses = True
 
 	def isTime(self):
 		return self.type == Options.TIME
