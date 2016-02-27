@@ -83,7 +83,8 @@ class GameLayer(ColorLayer):
 		self.intervalAddEnemy = options.getIntervalAddEnemy()
 		self.timerAddEnemy = self.intervalAddEnemy  # timer to add new enemy
 		self.timerShowBonus = random.randint(3, 10)  # timer to show bonus
-		self.timerSpeedDown = 0  # timer to stop the speed down bonus
+		self.timerSpeedDown = 0  # timer to stop the "speed down" bonus
+		self.timerSpeedUp = 0  # timer to stop the "speed up" bonus
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -149,10 +150,21 @@ class GameLayer(ColorLayer):
 	def giveBonus(self):
 		"""Gives a random advantage or disadvantage to the player."""
 		self.bonus.hide()
-		self.timerSpeedDown = 8
+
+		# Select the bonus
+		bonus = random.randint(0, 1)
+		if bonus == 0:
+			self.timerSpeedUp = 0
+			self.timerSpeedDown = 6
+		else:
+			self.timerSpeedDown = 0
+			self.timerSpeedUp = 3
 
 	def isSpeedDown(self):
 		return self.timerSpeedDown > 0
+
+	def isSpeedUp(self):
+		return self.timerSpeedUp > 0
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -164,7 +176,7 @@ class GameLayer(ColorLayer):
 			self.collMan.add(self.player)
 
 			# Update enemy balls
-			factor = 0.5 if self.isSpeedDown() else 1.0
+			factor = 0.5 if self.isSpeedDown() else 1.5 if self.isSpeedUp() else 1.0
 			for enemy in self.enemies:
 				enemy.update(dt, factor)
 				if enemy.enabled:
@@ -217,6 +229,8 @@ class GameLayer(ColorLayer):
 			# Count down bonus timers
 			if self.timerSpeedDown > 0:
 				self.timerSpeedDown -= dt
+			if self.timerSpeedUp > 0:
+				self.timerSpeedUp -= dt
 
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)
