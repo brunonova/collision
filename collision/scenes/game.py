@@ -10,7 +10,8 @@ from cocos.text import Label
 from gettext import gettext as _
 from pyglet import window
 
-from collision.balls import Bonus
+from ..balls import Bonus
+from ..timer import Timer
 from ..options import Options
 from .pause import PauseScene
 from ..balls import *
@@ -80,11 +81,19 @@ class GameLayer(ColorLayer):
 		self.mouseDelta = Vector2(0, 0)
 
 		# Set timers (all timers count down)
-		self.intervalAddEnemy = options.getIntervalAddEnemy()
-		self.timerAddEnemy = self.intervalAddEnemy  # timer to add new enemy
-		self.timerShowBonus = random.randint(3, 10)  # timer to show bonus
-		self.timerSpeedDown = 0  # timer to stop the "speed down" bonus
-		self.timerSpeedUp = 0  # timer to stop the "speed up" bonus
+		self.timers = dict()
+		if self.options.isTime():
+			# Timer to add new enemy
+			self.timers["addEnemy"] = Timer(options.getIntervalAddEnemy(),
+			                                callback=self.onAddEnemyTimer)
+		if self.options.bonuses:
+			# Timers related to bonuses
+			self.timers["showBonus"] = Timer(random.randint(3, 10),
+			                                 callback=self.onShowBonusTimer,
+			                                 cond=lambda: not self.bonus.enabled,
+											 min_=3, max_=10)
+			self.timers["speedDown"] = Timer()
+			self.timers["speedUp"] = Timer()
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -154,17 +163,25 @@ class GameLayer(ColorLayer):
 		# Select the bonus
 		bonus = random.randint(0, 1)
 		if bonus == 0:
-			self.timerSpeedUp = 0
-			self.timerSpeedDown = 6
+			self.timers["speedUp"].time = 0
+			self.timers["speedDown"].time = 6
 		else:
-			self.timerSpeedDown = 0
-			self.timerSpeedUp = 3
+			self.timers["speedDown"].time = 0
+			self.timers["speedUp"].time = 3
 
 	def isSpeedDown(self):
-		return self.timerSpeedDown > 0
+		return self.options.bonuses and self.timers["speedDown"].time > 0
 
 	def isSpeedUp(self):
-		return self.timerSpeedUp > 0
+		return self.options.bonuses and self.timers["speedUp"].time > 0
+
+	def onAddEnemyTimer(self, timer):
+		timer.time += self.options.getIntervalAddEnemy()
+		self.addEnemy()
+
+	def onShowBonusTimer(self, timer, min_, max_):
+		timer.time = random.randint(min_, max_)
+		self.bonus.show(self.player.x, self.player.y)
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -212,25 +229,9 @@ class GameLayer(ColorLayer):
 						   and self.collMan.they_collide(enemy, other):
 							Enemy.bounceBalls(enemy, other)
 
-			if self.options.bonuses and not self.bonus.enabled:
-				# Count down time to add show the bonus
-				self.timerShowBonus -= dt
-				if self.timerShowBonus <= 0:
-					self.timerShowBonus += random.randint(3, 10)
-					self.bonus.show(self.player.x, self.player.y)
-
-			if self.options.isTime():
-				# Count time to add a new enemy ball
-				self.timerAddEnemy -= dt
-				if self.timerAddEnemy <= 0:
-					self.timerAddEnemy += self.intervalAddEnemy
-					self.addEnemy()
-
-			# Count down bonus timers
-			if self.timerSpeedDown > 0:
-				self.timerSpeedDown -= dt
-			if self.timerSpeedUp > 0:
-				self.timerSpeedUp -= dt
+			# Update timers
+			for timer in self.timers.values():
+				timer.update(dt)
 
 	def on_key_press(self, key, modifiers):
 		self.keysPressed.add(key)
