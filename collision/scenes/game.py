@@ -112,6 +112,7 @@ class GameLayer(ColorLayer):
 											 min_=3, max_=10)
 			self.timers["speedDown"] = Timer()
 			self.timers["speedUp"] = Timer()
+			self.timers["freeze"] = Timer()
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -184,19 +185,28 @@ class GameLayer(ColorLayer):
 		self.bonus.hide()
 
 		# Select the bonus
-		bonus = random.randint(0, 1)
-		if bonus == 0:
+		bonus = random.randint(0, 2)
+		if bonus == 0:  # speed down enemy balls
 			self.timers["speedUp"].time = 0
 			self.timers["speedDown"].time = 6
-		else:
-			self.timers["speedDown"].time = 0
+			self.timers["freeze"].time = 0
+		elif bonus == 1:  # speed up enemy balls
 			self.timers["speedUp"].time = 3
+			self.timers["speedDown"].time = 0
+			self.timers["freeze"].time = 0
+		else:  # freeze enemy balls
+			self.timers["speedUp"].time = 0
+			self.timers["speedDown"].time = 0
+			self.timers["freeze"].time = 5
 
 	def isSpeedDown(self):
 		return self.options.bonuses and self.timers["speedDown"].time > 0
 
 	def isSpeedUp(self):
 		return self.options.bonuses and self.timers["speedUp"].time > 0
+
+	def isFreeze(self):
+		return self.options.bonuses and self.timers["freeze"].time > 0
 
 	def onAddEnemyTimer(self, timer):
 		timer.time += self.options.getIntervalAddEnemy()
@@ -211,12 +221,22 @@ class GameLayer(ColorLayer):
 			self.collMan.clear()
 
 			# Update player ball
+			#TODO: Limit the maximum speed of the ball?
 			self.player.update(dt, self.mouseDelta, self.keysPressed)
 			self.mouseDelta = Vector2(0, 0)
 			self.collMan.add(self.player)
 
+			# Determine factor to multiply enemy balls speed by
+			if self.isSpeedDown():
+				factor = 0.5
+			elif self.isSpeedUp():
+				factor = 1.5
+			elif self.isFreeze():
+				factor = 0.0
+			else:
+				factor = 1.0
+
 			# Update enemy balls
-			factor = 0.5 if self.isSpeedDown() else 1.5 if self.isSpeedUp() else 1.0
 			for enemy in self.enemies:
 				enemy.update(dt, factor)
 				if enemy.enabled:
