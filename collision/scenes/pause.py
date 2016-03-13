@@ -17,7 +17,7 @@
 import pyglet
 from cocos.actions import FadeIn, FadeOut, Repeat
 from cocos.director import director
-from cocos.layer import ColorLayer
+from cocos.layer import Layer
 from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
@@ -25,6 +25,7 @@ from pyglet import window
 from pyglet.gl import GL_TEXTURE_2D, GL_RGBA
 from pyglet.image import Texture
 
+from ..options import Options
 from .. import util
 
 
@@ -50,17 +51,17 @@ class PauseScene(Scene):
 		return PauseScene(texture.get_region(0, 0, width, height))
 
 
-class PauseLayer(ColorLayer):
+class PauseLayer(Layer):
 	"""Layer that shows "PAUSE"."""
 	is_event_handler = True
 
 	def __init__(self, background):
-		super().__init__(25, 25, 25, 205)
+		super().__init__()
 		self.background = background
 
 		width, height = director.get_window_size()
 		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
-		               color=(255, 255, 255, 255), anchor_x="center", anchor_y="center")
+		               color=Options.FONT_COLOR, anchor_x="center", anchor_y="center")
 		paused.position = width // 2, height // 2
 		paused.do(Repeat(FadeOut(0.3) + FadeIn(0.3)))  # blink
 		self.add(paused)
