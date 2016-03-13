@@ -88,12 +88,28 @@ class Player(Ball):
 		super().__init__("player.png")
 		self.position = x, y  # WARNING: position is a tuple, not a vector!
 		self.cshape.center = Vector2(x, y)  # the center must be a Vector2!
+		self._frozen = False
+
+	def freeze(self):
+		"""Freezes the ball."""
+		self.image = pyglet.resource.image("player_frozen.png")
+		self._frozen = True
+
+	def unfreeze(self):
+		"""Unfreezes the ball."""
+		self._frozen = False
+		self.image = pyglet.resource.image("player.png")
+
+	def isFrozen(self):
+		"""Returns whether the ball is frozen."""
+		return self._frozen
 
 	def update(self, dt, mouseDelta: Vector2, keysPressed):
 		# Move player according to mouse/keyboard
-		self.position += mouseDelta
-		self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
-		self.ensureWithinBorders()  # check borders
+		if not self.isFrozen():
+			self.position += mouseDelta
+			self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
+			self.ensureWithinBorders()  # check borders
 
 	@staticmethod
 	def _keyboardDelta(keysPressed):

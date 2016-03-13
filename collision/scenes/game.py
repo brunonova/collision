@@ -113,6 +113,7 @@ class GameLayer(ColorLayer):
 			self.timers["speedDown"] = Timer()
 			self.timers["speedUp"] = Timer()
 			self.timers["freeze"] = Timer()
+			self.timers["freezePlayer"] = Timer(callback=self.onFreezePlayerTimer)
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -185,7 +186,7 @@ class GameLayer(ColorLayer):
 		self.bonus.hide()
 
 		# Select the bonus
-		bonus = random.randint(0, 2)
+		bonus = random.randint(0, 3)
 		if bonus == 0:  # speed down enemy balls
 			self.timers["speedUp"].time = 0
 			self.timers["speedDown"].time = 6
@@ -194,10 +195,13 @@ class GameLayer(ColorLayer):
 			self.timers["speedUp"].time = 3
 			self.timers["speedDown"].time = 0
 			self.timers["freeze"].time = 0
-		else:  # freeze enemy balls
+		elif bonus == 2:  # freeze enemy balls
 			self.timers["speedUp"].time = 0
 			self.timers["speedDown"].time = 0
 			self.timers["freeze"].time = 5
+		elif bonus == 3:  # freeze player ball
+			self.player.freeze()
+			self.timers["freezePlayer"].time = 0.6
 
 	def isSpeedDown(self):
 		return self.options.bonuses and self.timers["speedDown"].time > 0
@@ -215,6 +219,9 @@ class GameLayer(ColorLayer):
 	def onShowBonusTimer(self, timer, min_, max_):
 		timer.time = random.randint(min_, max_)
 		self.bonus.show(self.player.x, self.player.y)
+
+	def onFreezePlayerTimer(self, timer):
+		self.player.unfreeze()
 
 	def update(self, dt):
 		if not self.isGameOver:
