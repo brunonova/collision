@@ -14,9 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
+import math, pyglet
 from cocos.director import director
 from cocos.euclid import Vector2
+from cocos.menu import Menu
+from pyglet.gl import GL_RGBA, GL_TEXTURE_2D
+from pyglet.image import Texture
+
+from .options import Options
 
 
 def distance(x1, y1, x2, y2):
@@ -68,3 +73,28 @@ def getWindowUsableSize():
 		return int(realSize[1] * virtualRatio), realSize[1]
 	else:  # real window is taller than virtual window
 		return realSize[0], int(realSize[0] / virtualRatio)
+
+def takeScreenshot():
+	"""
+	Takes a screenshot of the window and returns it.
+
+	@return: screenshot texture.
+	"""
+	width, height = getWindowUsableSize()
+	texture = Texture.create_for_size(GL_TEXTURE_2D, width, height, GL_RGBA)
+	texture.blit_into(pyglet.image.get_buffer_manager().get_color_buffer(), 0, 0, 0)
+	return texture.get_region(0, 0, width, height)
+
+
+class CustomizedMenu(Menu):
+	"""The same as the Menu class, but with custom fonts."""
+	def __init__(self, title=""):
+		super().__init__(title)
+		self.font_title["color"] = Options.FONT_COLOR
+		self.font_title["font_name"] = "Ubuntu"
+		self.font_item["color"] = Options.FONT_COLOR_NOT_SELECTED
+		self.font_item["font_name"] = "Ubuntu"
+		self.font_item_selected["color"] = Options.FONT_COLOR
+		self.font_item_selected["font_name"] = "Ubuntu"
+		self.font_item_selected["font_size"] = self.font_item["font_size"]
+		self.font_item_selected["bold"] = True

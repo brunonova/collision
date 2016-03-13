@@ -13,52 +13,54 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-from cocos.actions import FadeIn, FadeOut, Repeat
 from cocos.director import director
-from cocos.layer import Layer
+from cocos.menu import MenuItem, shake, shake_back, Menu
 from cocos.scene import Scene
-from cocos.text import Label
 from gettext import gettext as _
-from pyglet import window
 
-from ..options import Options
+from ..util import CustomizedMenu
 from .. import util
 
 
-class PauseScene(Scene):
+class QuitScene(Scene):
 	"""
-	The Pause Screen scene.
+	The in-game Quit menu scene.
 
-	Don't use the constructor directly! Instead, call PauseScene.create().
+	Don't use the constructor directly! Instead, call QuitScene.create().
 
 	The scene will show a "screenshot" of the previous scene as background.
 	The code is based on Cocos' pause module.
 	"""
 	def __init__(self, background=None):
-		super().__init__(PauseLayer(background))
+		super().__init__(QuitLayer(background))
 
 	@staticmethod
 	def create():
 		"""Creates and returns the Pause scene."""
 		# "Take a screenshot" and pass it to the scene
-		return PauseScene(util.takeScreenshot())
+		return QuitScene(util.takeScreenshot())
 
 
-class PauseLayer(Layer):
-	"""Layer that shows "PAUSE"."""
-	is_event_handler = True
-
+class QuitLayer(CustomizedMenu):
+	"""Layer that shows a Quit menu."""
 	def __init__(self, background):
-		super().__init__()
+		super().__init__(_("Quit?"))
 		self.background = background
 
-		width, height = director.get_window_size()
-		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
-		               color=Options.FONT_COLOR, anchor_x="center", anchor_y="center")
-		paused.position = width // 2, height // 2
-		paused.do(Repeat(FadeOut(0.3) + FadeIn(0.3)))  # blink
-		self.add(paused)
+		items = [
+			MenuItem(_("Yes"), self.onYes),
+			MenuItem(_("No"), self.onNo),
+		]
+		self.create_menu(items, shake(), shake_back())
+
+	def onYes(self):
+		# Pop 2 scenes (the current Quit scene and the Game scene)
+		director.pop()
+		director.pop()
+
+	def onNo(self):
+		# Pop the current Quit scene
+		director.pop()
 
 	def draw(self):
 		# Draw the screenshot as the background
@@ -67,6 +69,5 @@ class PauseLayer(Layer):
 			self.background.blit(0, 0, width=width, height=height)
 		super().draw()
 
-	def on_key_press(self, key, modifiers):
-		if key in (window.key.P, window.key.PAUSE):
-			director.pop()
+	def on_quit(self):
+		self.onNo()

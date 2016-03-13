@@ -25,7 +25,9 @@ from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
 from pyglet import window
+from pyglet.event import EVENT_HANDLED
 
+from .quit import QuitScene
 from ..balls import Bonus
 from ..timer import Timer
 from ..options import Options
@@ -172,6 +174,11 @@ class GameLayer(ColorLayer):
 		if not self.isGameOver:
 			director.push(PauseScene.create())
 
+	def showQuitMenu(self):
+		"""Shows the Quit menu."""
+		if not self.isGameOver:
+			director.push(QuitScene.create())
+
 	def giveBonus(self):
 		"""Gives a random advantage or disadvantage to the player."""
 		self.bonus.hide()
@@ -253,6 +260,10 @@ class GameLayer(ColorLayer):
 		self.keysPressed.add(key)
 		if key in (window.key.P, window.key.PAUSE):
 			self.pauseGame()
+			return EVENT_HANDLED
+		elif key == window.key.ESCAPE:
+			self.showQuitMenu()
+			return EVENT_HANDLED
 
 	def on_key_release(self, key, modifiers):
 		if key in self.keysPressed:

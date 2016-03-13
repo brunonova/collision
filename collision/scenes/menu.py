@@ -17,12 +17,13 @@
 import pyglet
 from cocos.director import director
 from cocos.layer import ColorLayer, MultiplexLayer
-from cocos.menu import Menu, MenuItem, ToggleMenuItem, MultipleMenuItem, \
+from cocos.menu import MenuItem, ToggleMenuItem, MultipleMenuItem, \
      shake, shake_back
 from cocos.scene import Scene
 from gettext import gettext as _
 from pyglet.window import key
 
+from ..util import CustomizedMenu
 from ..options import Options
 from .game import GameScene
 
@@ -34,20 +35,6 @@ class MenuScene(Scene):
 		optionsLayer = OptionsLayer(menuLayer)
 		super().__init__(ColorLayer(*Options.BACKGROUND_COLOR),
 						 MultiplexLayer(menuLayer, optionsLayer))
-
-
-class CustomizedMenu(Menu):
-	"""The same as the Menu class, but with custom fonts."""
-	def __init__(self, title=""):
-		super().__init__(title)
-		self.font_title["color"] = Options.FONT_COLOR
-		self.font_title["font_name"] = "Ubuntu"
-		self.font_item["color"] = Options.FONT_COLOR_NOT_SELECTED
-		self.font_item["font_name"] = "Ubuntu"
-		self.font_item_selected["color"] = Options.FONT_COLOR
-		self.font_item_selected["font_name"] = "Ubuntu"
-		self.font_item_selected["font_size"] = self.font_item["font_size"]
-		self.font_item_selected["bold"] = True
 
 
 class MenuLayer(CustomizedMenu):
@@ -62,7 +49,7 @@ class MenuLayer(CustomizedMenu):
 		items = [
 			MenuItem(_("Play"), self.onPlay),
 			MenuItem(_("Options"), self.onOptions),
-			MenuItem(_("Quit"), self.on_quit)
+			MenuItem(_("Quit"), self.on_quit),
 		]
 		self.create_menu(items, shake(), shake_back())
 
@@ -100,7 +87,7 @@ class OptionsLayer(CustomizedMenu):
 			               self.menuLayer.options.ballsCollide),
 			ToggleMenuItem(_("Full screen: "), self.onFullscreen,
 			               director.window.fullscreen),
-			MenuItem(_("< Back"), self.on_quit)
+			MenuItem(_("< Back"), self.on_quit),
 		]
 		self.create_menu(items, shake(), shake_back())
 
