@@ -88,7 +88,11 @@ class Player(Ball):
 		super().__init__("player.png")
 		self.position = x, y  # WARNING: position is a tuple, not a vector!
 		self.cshape.center = Vector2(x, y)  # the center must be a Vector2!
+
 		self._frozen = False
+		self._invulnerable = False
+		self.invulnerableSprite = Sprite("player_invulnerable.png", opacity=0)
+		self.add(self.invulnerableSprite, z=0.8)
 
 	def freeze(self):
 		"""Freezes the ball."""
@@ -103,6 +107,20 @@ class Player(Ball):
 	def isFrozen(self):
 		"""Returns whether the ball is frozen."""
 		return self._frozen
+
+	def makeInvulnerable(self):
+		"""Makes the ball invulnerable."""
+		self._invulnerable = True
+		self.invulnerableSprite.opacity = 255
+
+	def makeVulnerable(self):
+		"""Makes the ball vulnerable."""
+		self.invulnerableSprite.opacity = 0
+		self._invulnerable = False
+
+	def isInvulnerable(self):
+		"""Returns whether the ball is invulnerable."""
+		return self._invulnerable
 
 	def update(self, dt, mouseDelta: Vector2, keysPressed):
 		# Move player according to mouse/keyboard

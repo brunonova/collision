@@ -114,6 +114,7 @@ class GameLayer(ColorLayer):
 			self.timers["speedUp"] = Timer()
 			self.timers["freeze"] = Timer()
 			self.timers["freezePlayer"] = Timer(callback=self.onFreezePlayerTimer)
+			self.timers["invulnerable"] = Timer(callback=self.onInvulnerableTimer)
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -186,7 +187,7 @@ class GameLayer(ColorLayer):
 		self.bonus.hide()
 
 		# Select the bonus
-		bonus = random.randint(0, 3)
+		bonus = random.randint(0, 4)
 		if bonus == 0:  # speed down enemy balls
 			self.timers["speedUp"].time = 0
 			self.timers["speedDown"].time = 6
@@ -202,6 +203,11 @@ class GameLayer(ColorLayer):
 		elif bonus == 3:  # freeze player ball
 			self.player.freeze()
 			self.timers["freezePlayer"].time = 0.6
+		elif bonus == 4:  # player invulnerability
+			self.timers["freezePlayer"].timer = 0
+			self.player.unfreeze()
+			self.timers["invulnerable"].time = 6
+			self.player.makeInvulnerable()
 
 	def isSpeedDown(self):
 		return self.options.bonuses and self.timers["speedDown"].time > 0
@@ -222,6 +228,9 @@ class GameLayer(ColorLayer):
 
 	def onFreezePlayerTimer(self, timer):
 		self.player.unfreeze()
+
+	def onInvulnerableTimer(self, timer):
+		self.player.makeVulnerable()
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -267,9 +276,10 @@ class GameLayer(ColorLayer):
 					self.giveBonus()
 
 			# Check collisions between player and enemies
-			for enemy in self.enemies:
-				if enemy.enabled and self.collMan.they_collide(self.player, enemy):
-					self.gameOver()
+			if not self.player.isInvulnerable():
+				for enemy in self.enemies:
+					if enemy.enabled and self.collMan.they_collide(self.player, enemy):
+						self.gameOver()
 
 			# Check collisions between enemies
 			if self.options.ballsCollide:
