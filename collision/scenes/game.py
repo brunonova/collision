@@ -28,7 +28,6 @@ from pyglet import window
 from pyglet.event import EVENT_HANDLED
 
 from .quit import QuitScene
-from ..balls import Bonus
 from ..timer import Timer
 from ..options import Options
 from .pause import PauseScene
@@ -115,6 +114,7 @@ class GameLayer(ColorLayer):
 			self.timers["freeze"] = Timer()
 			self.timers["freezePlayer"] = Timer(callback=self.onFreezePlayerTimer)
 			self.timers["invulnerable"] = Timer(callback=self.onInvulnerableTimer)
+			self.timers["missile"] = Timer(callback=self.onMissileTimer)
 
 		# Create player ball
 		width, height = director.get_window_size()
@@ -134,6 +134,10 @@ class GameLayer(ColorLayer):
 			# Create bonus
 			self.bonus = Bonus()
 			self.add(self.bonus, z=0.0)
+
+			# Create missile
+			self.missile = Missile()
+			self.add(self.missile, z=0.2)
 
 		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
 		self.schedule(self.update)
@@ -187,7 +191,7 @@ class GameLayer(ColorLayer):
 		self.bonus.hide()
 
 		# Select the bonus
-		bonus = random.randint(0, 4)
+		bonus = random.randint(0, 5)
 		if bonus == 0:  # speed down enemy balls
 			self.timers["speedUp"].time = 0
 			self.timers["speedDown"].time = 6
@@ -210,6 +214,9 @@ class GameLayer(ColorLayer):
 			self.player.unfreeze()
 			self.timers["invulnerable"].time = 6
 			self.player.makeInvulnerable()
+		else:  # missile
+			self.timers["missile"].time = 5
+			self.missile.show(self.player.x, self.player.y)
 
 	def isSpeedDown(self):
 		return self.options.bonuses and self.timers["speedDown"].time > 0
@@ -233,6 +240,9 @@ class GameLayer(ColorLayer):
 
 	def onInvulnerableTimer(self, timer):
 		self.player.makeVulnerable()
+
+	def onMissileTimer(self, timer):
+		self.missile.hide()
 
 	def update(self, dt):
 		if not self.isGameOver:
@@ -260,6 +270,10 @@ class GameLayer(ColorLayer):
 				if enemy.enabled:
 					self.collMan.add(enemy)
 
+			# Update missile
+			if self.options.bonuses and self.missile.enabled:
+				self.missile.update(dt, self.player.x, self.player.y)
+
 			# Check collision between player and coin
 			if self.options.isCoins() and self.coin.enabled:
 				self.collMan.add(self.coin)
@@ -271,11 +285,18 @@ class GameLayer(ColorLayer):
 					if self.coins % self.options.getCoinsAddEnemy() == 0:
 						self.addEnemy()  # add an enemy every N coins
 
-			# Check collision between player and bonus
-			if self.options.bonuses and self.bonus.enabled:
-				self.collMan.add(self.bonus)
-				if self.collMan.they_collide(self.player, self.bonus):
-					self.giveBonus()
+			if self.options.bonuses:
+				# Check collision between player and bonus
+				if self.bonus.enabled:
+					self.collMan.add(self.bonus)
+					if self.collMan.they_collide(self.player, self.bonus):
+						self.giveBonus()
+
+				# Check collision between player and missile
+				if self.missile.enabled and not self.player.isInvulnerable():
+					self.collMan.add(self.missile)
+					if self.collMan.they_collide(self.player, self.missile):
+						self.gameOver()
 
 			# Check collisions between player and enemies
 			if not self.player.isInvulnerable():

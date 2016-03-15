@@ -26,7 +26,7 @@ from pyglet import window
 
 from . import util
 
-__all__ = ["Player", "Enemy", "Coin"]
+__all__ = ["Player", "Enemy", "Coin", "Bonus", "Missile"]
 
 
 class Ball(Sprite):
@@ -297,7 +297,51 @@ class Bonus(Ball):
 
 	def hide(self):
 		"""Hides the bonus and disables it."""
+		self.enabled = False
+		self.opacity = 0
+		self.stop()
+
+
+class Missile(Ball):
+	"""A homing-missile that tries to hit the player."""
+	PLAYER_DISTANCE = 200  # minimum distance from the player when created
+	SPEED = 200  # speed of the missile
+
+	def __init__(self):
+		"""Creates a bonus (disabled and hidden)."""
+		super().__init__("missile.png")
+		self.enabled = False  # whether the missile moves and is collidable
+		self.opacity = 0
+		self.direction = 0
+
+	def show(self, playerX, playerY):
+		"""
+		Shows the missile and enables it.
+
+		@param playerX: x position of the player ball.
+		@param playerY: y position of the player ball.
+		"""
+		if not self.enabled:
+			self.setRandomPosition(playerX, playerY, Missile.PLAYER_DISTANCE)
+			self.direction = self._getPlayerDirection(playerX, playerY)
+			self.do(FadeIn(0.5) + CallFunc(self._enable))
+
+	def hide(self):
+		"""Hides the missile and disables it."""
+		self.enabled = False
+		self.opacity = 0
+		self.stop()
+
+	def update(self, dt, playerX, playerY):
 		if self.enabled:
-			self.enabled = False
-			self.opacity = 0
-			self.stop()
+			#TODO: Check window borders
+			self.direction = self._getPlayerDirection(playerX, playerY)
+			speed = util.vectorFromAngle(self.direction, Missile.SPEED * dt)
+			self.position += speed
+			self.cshape.center = Vector2(self.x, self.y)
+
+	def _enable(self):
+		self.enabled = True
+
+	def _getPlayerDirection(self, playerX, playerY):
+		return math.atan2(playerY - self.y, playerX - self.x)
