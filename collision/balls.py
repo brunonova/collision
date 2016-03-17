@@ -14,9 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import math, random
-
-import pyglet
+import math, random, pyglet
 from cocos.actions import CallFunc, FadeIn
 from cocos.collision_model import CircleShape
 from cocos.director import director
@@ -333,9 +331,12 @@ class Missile(Ball):
 		self.stop()
 
 	def update(self, dt, playerX, playerY):
+		# The missile needs to be rotated when fading in (not enabled yet)
+		self.direction = self._getPlayerDirection(playerX, playerY)
+		self.rotation = -math.degrees(self.direction)  # rotation is in degrees!
+
 		if self.enabled:
 			#TODO: Check window borders
-			self.direction = self._getPlayerDirection(playerX, playerY)
 			speed = util.vectorFromAngle(self.direction, Missile.SPEED * dt)
 			self.position += speed
 			self.cshape.center = Vector2(self.x, self.y)

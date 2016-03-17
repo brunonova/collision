@@ -22,6 +22,7 @@ from .scenes.menu import MenuScene
 
 def startGame():
 	"""Starts the game."""
+	#TODO: set a window icon
 	# Find directory path
 	path = os.path.dirname(os.path.abspath(__file__))
 

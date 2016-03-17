@@ -271,7 +271,7 @@ class GameLayer(ColorLayer):
 					self.collMan.add(enemy)
 
 			# Update missile
-			if self.options.bonuses and self.missile.enabled:
+			if self.options.bonuses:
 				self.missile.update(dt, self.player.x, self.player.y)
 
 			# Check collision between player and coin
