@@ -42,7 +42,7 @@ class Ball(Sprite):
 			realImage = self.image  # it's an image
 
 		self.radius = realImage.width // 2  # radius of the ball
-		self.anchor = self.radius, self.radius
+		self.image_anchor = self.radius, self.radius
 		self.cshape = CircleShape(Vector2(self.x, self.y), self.radius)
 
 	def ensureWithinBorders(self):
