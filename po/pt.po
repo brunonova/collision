@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-13 17:40+0000\n"
-"PO-Revision-Date: 2016-03-13 17:41+0000\n"
+"POT-Creation-Date: 2016-03-17 18:47+0000\n"
+"PO-Revision-Date: 2016-03-17 18:48+0000\n"
 "Last-Translator: Bruno Nova <brunomb.nova@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
 "Language: pt\n"
@@ -17,27 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: collision/scenes/menu.py:90
+#: collision/scenes/menu.py:86
 msgid "< Back"
 msgstr "< Voltar"
 
-#: collision/scenes/menu.py:86
-msgid "Balls collide: "
-msgstr "Bolas colidem: "
-
-#: collision/scenes/game.py:79
+#: collision/scenes/game.py:78
 msgid "Balls: {}"
 msgstr "Bolas: {}"
-
-#: collision/scenes/menu.py:84
-msgid "Bonuses: "
-msgstr "Bónus: "
 
 #: collision/options.py:24 collision/scenes/menu.py:80
 msgid "Coins"
 msgstr "Moedas"
 
-#: collision/scenes/game.py:78
+#: collision/scenes/game.py:77
 msgid "Coins: {}"
 msgstr "Moedas: {}"
 
@@ -49,7 +41,7 @@ msgstr "Dificuldade: "
 msgid "Easy"
 msgstr "Fácil"
 
-#: collision/scenes/menu.py:88
+#: collision/scenes/menu.py:84
 msgid "Full screen: "
 msgstr "Ecrã completo: "
 
@@ -61,7 +53,7 @@ msgstr "Difícil"
 msgid "Medium"
 msgstr "Médio"
 
-#: collision/scenes/quit.py:43
+#: collision/scenes/quit.py:52
 msgid "No"
 msgstr "Não"
 
@@ -81,7 +73,7 @@ msgstr "Jogar"
 msgid "Quit"
 msgstr "Sair"
 
-#: collision/scenes/quit.py:38
+#: collision/scenes/quit.py:47
 msgid "Quit?"
 msgstr "Sair?"
 
@@ -89,7 +81,7 @@ msgstr "Sair?"
 msgid "Time"
 msgstr "Tempo"
 
-#: collision/scenes/game.py:76
+#: collision/scenes/game.py:75
 msgid "Time: {}"
 msgstr "Tempo: {}"
 
@@ -97,6 +89,12 @@ msgstr "Tempo: {}"
 msgid "Type: "
 msgstr "Tipo: "
 
-#: collision/scenes/quit.py:42
+#: collision/scenes/quit.py:51
 msgid "Yes"
 msgstr "Sim"
+
+#~ msgid "Balls collide: "
+#~ msgstr "Bolas colidem: "
+
+#~ msgid "Bonuses: "
+#~ msgstr "Bónus: "
