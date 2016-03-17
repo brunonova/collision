@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import math, random, pyglet
-from cocos.actions import CallFunc, FadeIn
+from cocos.actions import CallFunc, FadeIn, FadeOut
 from cocos.collision_model import CircleShape
 from cocos.director import director
 from cocos.euclid import Vector2
@@ -108,13 +108,17 @@ class Player(Ball):
 
 	def makeInvulnerable(self):
 		"""Makes the ball invulnerable."""
+		self.invulnerableSprite.stop()
 		self._invulnerable = True
 		self.invulnerableSprite.opacity = 255
 
 	def makeVulnerable(self):
-		"""Makes the ball vulnerable."""
-		self.invulnerableSprite.opacity = 0
-		self._invulnerable = False
+		"""Makes the ball vulnerable after an animation."""
+		if self.isInvulnerable():
+			self.invulnerableSprite.stop()
+			actions = FadeOut(0.2) + (FadeIn(0.2) + FadeOut(0.2)) * 4 + \
+			          CallFunc(self._makeVulnerable)
+			self.invulnerableSprite.do(actions)
 
 	def isInvulnerable(self):
 		"""Returns whether the ball is invulnerable."""
@@ -126,6 +130,10 @@ class Player(Ball):
 			self.position += mouseDelta
 			self.position += Player._keyboardDelta(keysPressed) * Player.SPEED * dt
 			self.ensureWithinBorders()  # check borders
+
+	def _makeVulnerable(self):
+		self.invulnerableSprite.opacity = 0
+		self._invulnerable = False
 
 	@staticmethod
 	def _keyboardDelta(keysPressed):
