@@ -21,6 +21,7 @@ from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
 from pyglet import window
+from pyglet.event import EVENT_HANDLED
 
 from ..options import Options
 from .. import util
@@ -68,5 +69,6 @@ class PauseLayer(Layer):
 		super().draw()
 
 	def on_key_press(self, key, modifiers):
-		if key in (window.key.P, window.key.PAUSE):
+		if key in (window.key.P, window.key.PAUSE, window.key.ESCAPE):
 			director.pop()
+			return EVENT_HANDLED
