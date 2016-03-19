@@ -36,7 +36,7 @@ def startGame():
 	pyglet.font.add_directory(os.path.join(path, "res"))
 
 	# Start game
-	director.init(caption="Collision", width=600, height=600)
+	director.init(caption="Collision", width=600, height=600, resizable=True)
 	# TODO: remove default handler
 	#director.window.pop_handlers()
 	director.run(MenuScene())
