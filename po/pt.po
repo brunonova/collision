@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-17 18:47+0000\n"
-"PO-Revision-Date: 2016-03-17 18:48+0000\n"
+"POT-Creation-Date: 2016-03-19 18:24+0000\n"
+"PO-Revision-Date: 2016-03-19 18:25+0000\n"
 "Last-Translator: Bruno Nova <brunomb.nova@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
 "Language: pt\n"
@@ -17,39 +17,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: collision/scenes/menu.py:86
+#: collision/scenes/menu.py:100
 msgid "< Back"
 msgstr "< Voltar"
 
-#: collision/scenes/game.py:78
+#: collision/scenes/game.py:79
 msgid "Balls: {}"
 msgstr "Bolas: {}"
 
-#: collision/options.py:24 collision/scenes/menu.py:80
+#: collision/options.py:26 collision/scenes/menu.py:94
 msgid "Coins"
 msgstr "Moedas"
 
-#: collision/scenes/game.py:77
+#: collision/scenes/game.py:78
 msgid "Coins: {}"
 msgstr "Moedas: {}"
 
-#: collision/scenes/menu.py:81
+#: collision/scenes/menu.py:95
 msgid "Difficulty: "
 msgstr "Dificuldade: "
 
-#: collision/options.py:25 collision/scenes/menu.py:82
+#: collision/options.py:27 collision/scenes/menu.py:96
 msgid "Easy"
 msgstr "Fácil"
 
-#: collision/scenes/menu.py:84
+#: collision/scenes/menu.py:98
 msgid "Full screen: "
 msgstr "Ecrã completo: "
 
-#: collision/options.py:25 collision/scenes/menu.py:82
+#: collision/options.py:27 collision/scenes/menu.py:96
 msgid "Hard"
 msgstr "Difícil"
 
-#: collision/options.py:25 collision/scenes/menu.py:82
+#: collision/options.py:27 collision/scenes/menu.py:96
 msgid "Medium"
 msgstr "Médio"
 
@@ -57,7 +57,7 @@ msgstr "Médio"
 msgid "No"
 msgstr "Não"
 
-#: collision/scenes/menu.py:51 collision/scenes/menu.py:74
+#: collision/scenes/menu.py:65 collision/scenes/menu.py:88
 msgid "Options"
 msgstr "Opções"
 
@@ -65,11 +65,11 @@ msgstr "Opções"
 msgid "PAUSE"
 msgstr "PAUSA"
 
-#: collision/scenes/menu.py:50
+#: collision/scenes/menu.py:64
 msgid "Play"
 msgstr "Jogar"
 
-#: collision/scenes/menu.py:52
+#: collision/scenes/menu.py:66
 msgid "Quit"
 msgstr "Sair"
 
@@ -77,17 +77,21 @@ msgstr "Sair"
 msgid "Quit?"
 msgstr "Sair?"
 
-#: collision/options.py:24 collision/scenes/menu.py:80
+#: collision/options.py:26 collision/scenes/menu.py:94
 msgid "Time"
 msgstr "Tempo"
 
-#: collision/scenes/game.py:75
+#: collision/scenes/game.py:76
 msgid "Time: {}"
 msgstr "Tempo: {}"
 
-#: collision/scenes/menu.py:79
+#: collision/scenes/menu.py:93
 msgid "Type: "
 msgstr "Tipo: "
+
+#: collision/scenes/menu.py:50
+msgid "Version: {}"
+msgstr "Versão: {}"
 
 #: collision/scenes/quit.py:51
 msgid "Yes"

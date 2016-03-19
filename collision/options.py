@@ -19,6 +19,8 @@ from gettext import gettext as _
 
 class Options:
 	"""Holds the game options."""
+	# Game version
+	VERSION = "0.0.1"
 
 	# Names of the multiple-choice options
 	TYPE_NAMES = _("Time"), _("Coins")
@@ -37,6 +39,7 @@ class Options:
 	BACKGROUND_COLOR = (192, 192, 192, 255)
 	FONT_COLOR = (0, 0, 0, 255)
 	FONT_COLOR_NOT_SELECTED = (92, 92, 92, 255)
+	FONT_NAME = "Ubuntu"
 
 	def __init__(self):
 		self.type = Options.TIME

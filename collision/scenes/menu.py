@@ -20,6 +20,7 @@ from cocos.layer import ColorLayer, MultiplexLayer
 from cocos.menu import MenuItem, ToggleMenuItem, MultipleMenuItem, \
      shake, shake_back
 from cocos.scene import Scene
+from cocos.text import Label
 from gettext import gettext as _
 from pyglet.window import key
 
@@ -33,8 +34,21 @@ class MenuScene(Scene):
 	def __init__(self):
 		menuLayer = MenuLayer()
 		optionsLayer = OptionsLayer(menuLayer)
-		super().__init__(ColorLayer(*Options.BACKGROUND_COLOR),
+		super().__init__(BackgroundLayer(),
 						 MultiplexLayer(menuLayer, optionsLayer))
+
+
+class BackgroundLayer(ColorLayer):
+	"""Layer that displays the version of the game."""
+	def __init__(self):
+		super().__init__(*Options.BACKGROUND_COLOR)
+
+		version = Label(font_name=Options.FONT_NAME, font_size=16,
+		                color=Options.FONT_COLOR_NOT_SELECTED,
+		                anchor_x="right", anchor_y="bottom")
+		version.position = director.get_window_size()[0] - 5, 5
+		version.element.text = _("Version: {}").format(Options.VERSION)
+		self.add(version)
 
 
 class MenuLayer(CustomizedMenu):

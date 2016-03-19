@@ -2,6 +2,8 @@
 import os
 from setuptools import setup, find_packages
 
+from collision.options import Options
+
 # Find directory path
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -11,7 +13,7 @@ with open(os.path.join(path, "README.md")) as f:
 
 setup(
 	name = "Collision",
-	version = "0.0.1",
+	version = Options.VERSION,
 	author = "Bruno Nova",
 	author_email = "brunomb.nova@gmail.com",
 	description = "A ball dodging game",

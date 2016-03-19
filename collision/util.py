@@ -91,10 +91,10 @@ class CustomizedMenu(Menu):
 	def __init__(self, title=""):
 		super().__init__(title)
 		self.font_title["color"] = Options.FONT_COLOR
-		self.font_title["font_name"] = "Ubuntu"
+		self.font_title["font_name"] = Options.FONT_NAME
 		self.font_item["color"] = Options.FONT_COLOR_NOT_SELECTED
-		self.font_item["font_name"] = "Ubuntu"
+		self.font_item["font_name"] = Options.FONT_NAME
 		self.font_item_selected["color"] = Options.FONT_COLOR
-		self.font_item_selected["font_name"] = "Ubuntu"
+		self.font_item_selected["font_name"] = Options.FONT_NAME
 		self.font_item_selected["font_size"] = self.font_item["font_size"]
 		self.font_item_selected["bold"] = True
