@@ -53,17 +53,18 @@ class HUDLayer(Layer):
 		super().__init__()
 		self.gameLayer = gameLayer
 		self.time = 0
+		winSize = director.get_window_size()
 
 		# Time/coins label
 		self.score = Label(font_name="Ubuntu", font_size=16, color=Options.FONT_COLOR,
-		                   anchor_x="left", anchor_y="bottom")
-		self.score.position = 10, 0
+		                   anchor_x="left", anchor_y="top")
+		self.score.position = 10, winSize[1] - 10  # top left
 		self.add(self.score)
 
 		# Enemy ball count label
 		self.enemies = Label(font_name="Ubuntu", font_size=16, color=Options.FONT_COLOR,
-		                     anchor_x="right", anchor_y="bottom")
-		self.enemies.position = director.get_window_size()[0] - 10, 0
+		                     anchor_x="right", anchor_y="top")
+		self.enemies.position = winSize[0] - 10, winSize[1] - 10  # top right
 		self.add(self.enemies)
 
 		self.schedule(self.update)
