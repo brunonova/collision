@@ -22,7 +22,6 @@ from .scenes.menu import MenuScene
 
 def startGame():
 	"""Starts the game."""
-	#TODO: set a window icon
 	# Find directory path
 	path = os.path.dirname(os.path.abspath(__file__))
 
@@ -35,8 +34,11 @@ def startGame():
 	pyglet.resource.reindex()
 	pyglet.font.add_directory(os.path.join(path, "res"))
 
-	# Start game
+	# Initialize director
 	director.init(caption="Collision", width=600, height=600, resizable=True)
+	director.window.set_icon(pyglet.resource.image("player.png"))
 	# TODO: remove default handler
 	#director.window.pop_handlers()
+
+	# Start game
 	director.run(MenuScene())
