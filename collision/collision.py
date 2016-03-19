@@ -37,8 +37,7 @@ def startGame():
 	# Initialize director
 	director.init(caption="Collision", width=600, height=600, resizable=True)
 	director.window.set_icon(pyglet.resource.image("player.png"))
-	# TODO: remove default handler
-	#director.window.pop_handlers()
+	director.window.pop_handlers()  # remove default handler
 
 	# Start game
 	director.run(MenuScene())
