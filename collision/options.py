@@ -30,7 +30,7 @@ class Options:
 
 	# Parameters that depend on difficulty
 	INTERVAL_ADD_ENEMY = 20, 15, 10  # Interval between enemy balls additions
-	ENEMY_SPEED = 200, 350, 500  # Initial enemy balls speed
+	ENEMY_SPEED = 200, 300, 400  # Initial enemy balls speed
 	COINS_ADD_ENEMY = 8, 6, 4  # Coins needed to add a new enemy ball
 
 	# Other constants
