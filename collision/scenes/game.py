@@ -250,7 +250,6 @@ class GameLayer(ColorLayer):
 			self.collMan.clear()
 
 			# Update player ball
-			#TODO: Limit the maximum speed of the ball?
 			self.player.update(dt, self.mouseDelta, self.keysPressed)
 			self.mouseDelta = Vector2(0, 0)
 			self.collMan.add(self.player)
