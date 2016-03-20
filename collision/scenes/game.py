@@ -52,7 +52,6 @@ class HUDLayer(Layer):
 	def __init__(self, gameLayer):
 		super().__init__()
 		self.gameLayer = gameLayer
-		self.time = 0
 		winSize = director.get_window_size()
 
 		# Time/coins label
@@ -70,13 +69,11 @@ class HUDLayer(Layer):
 		self.schedule(self.update)
 
 	def update(self, dt):
-		if not self.gameLayer.isGameOver:
-			if self.gameLayer.options.isTime():
-				self.time += dt
-				self.score.element.text = _("Time: {}").format(int(self.time))
-			else:
-				self.score.element.text = _("Coins: {}").format(self.gameLayer.coins)
-			self.enemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
+		if self.gameLayer.options.isTime():
+			self.score.element.text = _("Time: {}").format(int(self.gameLayer.time))
+		else:
+			self.score.element.text = _("Coins: {}").format(self.gameLayer.coins)
+		self.enemies.element.text = _("Balls: {}").format(self.gameLayer.getNumberOfEnemies())
 
 
 class GameLayer(ColorLayer):
@@ -95,6 +92,7 @@ class GameLayer(ColorLayer):
 		self.keysPressed = set()
 		self.enemies = []
 		self.isGameOver = False
+		self.time = 0
 		self.coins = 0
 		self.mouseDelta = Vector2(0, 0)
 
@@ -243,6 +241,7 @@ class GameLayer(ColorLayer):
 
 	def update(self, dt):
 		if not self.isGameOver:
+			self.time += dt  # count total game time
 			self.collMan.clear()
 
 			# Update player ball
