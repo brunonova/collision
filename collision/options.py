@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import configparser, os, sys
 from gettext import gettext as _
 
 
@@ -42,10 +43,7 @@ class Options:
 	FONT_NAME = "Ubuntu"
 
 	def __init__(self):
-		self.type = Options.TIME
-		self.difficulty = Options.MEDIUM
-		self.ballsCollide = True
-		self.bonuses = True
+		self._readConfig()  # Read the config file
 
 	def isTime(self):
 		return self.type == Options.TIME
@@ -70,3 +68,66 @@ class Options:
 
 	def getCoinsAddEnemy(self):
 		return Options.COINS_ADD_ENEMY[self.difficulty]
+
+	@staticmethod
+	def getUserConfigFolder():
+		"""Returns the path to the user's .config or AppData/Local folder."""
+		home = os.environ["HOME"]
+		if sys.platform == "win32":  # Windows
+			return os.path.join(home, "AppData", "Local", "collision")
+		else:  # Linux or other
+			return os.path.join(home, ".config", "collision")
+
+	@property
+	def type(self):
+		value = self._config.getint("Options", "type", fallback=Options.TIME)
+		# Ensure the value is valid
+		return value if 0 <= value < len(Options.TYPE_NAMES) else Options.TIME
+
+	@type.setter
+	def type(self, value):
+		self._config["Options"]["type"] = str(value)
+		self._saveConfig()
+
+	@property
+	def difficulty(self):
+		value = self._config.getint("Options", "difficulty", fallback=Options.MEDIUM)
+		# Ensure the value is valid
+		return value if 0 <= value < len(Options.DIFFICULTY_NAMES) else Options.MEDIUM
+
+	@difficulty.setter
+	def difficulty(self, value):
+		self._config["Options"]["difficulty"] = str(value)
+		self._saveConfig()
+
+	@property
+	def fullscreen(self):
+		return self._config.getboolean("Options", "fullscreen", fallback=False)
+
+	@fullscreen.setter
+	def fullscreen(self, value):
+		self._config["Options"]["fullscreen"] = "yes" if value else "no"
+		self._saveConfig()
+
+	@property
+	def ballsCollide(self):
+		return True
+
+	@property
+	def bonuses(self):
+		return True
+
+	def _readConfig(self):
+		self._config = configparser.ConfigParser()
+		self._configDir = Options.getUserConfigFolder()
+		self._configFilename = os.path.join(self._configDir, "options.ini")
+		self._config.read(self._configFilename)
+
+		# Create the Options section if it doesn't exist
+		if not "Options" in self._config.sections():
+			self._config["Options"] = {}
+
+	def _saveConfig(self):
+		os.makedirs(self._configDir, exist_ok=True)
+		with open(self._configFilename, "w") as file:
+			self._config.write(file)

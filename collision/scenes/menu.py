@@ -58,6 +58,7 @@ class MenuLayer(CustomizedMenu):
 
 		# Initialize game options
 		self.options = Options()
+		if self.options.fullscreen: director.window.set_fullscreen(True)
 
 		# Add the items and create the menu
 		items = [
@@ -96,7 +97,7 @@ class OptionsLayer(CustomizedMenu):
 			              [_("Easy"), _("Medium"), _("Hard")],
 			              self.menuLayer.options.difficulty),
 			ToggleMenuItem(_("Full screen: "), self.onFullscreen,
-			               director.window.fullscreen),
+			               self.menuLayer.options.fullscreen),
 			MenuItem(_("< Back"), self.on_quit),
 		]
 		self.create_menu(items, shake(), shake_back())
@@ -114,6 +115,7 @@ class OptionsLayer(CustomizedMenu):
 		self.menuLayer.options.ballsCollide = value
 
 	def onFullscreen(self, value):
+		self.menuLayer.options.fullscreen = value
 		director.window.set_fullscreen(value)
 
 	def on_quit(self):
