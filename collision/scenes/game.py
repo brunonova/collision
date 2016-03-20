@@ -206,13 +206,9 @@ class GameLayer(ColorLayer):
 			self.timers["speedDown"].time = 0
 			self.timers["freeze"].time = 5
 		elif bonus == 3:  # freeze player ball
-			self.timers["invulnerable"].time = 0
-			self.player.makeVulnerable()
 			self.timers["freezePlayer"].time = 0.6
 			self.player.freeze()
 		elif bonus == 4:  # player invulnerability
-			self.timers["freezePlayer"].timer = 0
-			self.player.unfreeze()
 			self.timers["invulnerable"].time = 6
 			self.player.makeInvulnerable()
 		else:  # missile
