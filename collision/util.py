@@ -92,8 +92,10 @@ class CustomizedMenu(Menu):
 		super().__init__(title)
 		self.font_title["color"] = Options.FONT_COLOR
 		self.font_title["font_name"] = Options.FONT_NAME
+		self.font_title["font_size"] = 40
 		self.font_item["color"] = Options.FONT_COLOR_NOT_SELECTED
 		self.font_item["font_name"] = Options.FONT_NAME
+		self.font_item["font_size"] = 30
 		self.font_item_selected["color"] = Options.FONT_COLOR
 		self.font_item_selected["font_name"] = Options.FONT_NAME
 		self.font_item_selected["font_size"] = self.font_item["font_size"]
