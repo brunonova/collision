@@ -19,6 +19,7 @@ from cocos.menu import EntryMenuItem, MenuItem, shake, shake_back
 from cocos.scene import Scene
 from gettext import gettext as _
 
+from .highScores import HighScoresScene
 from ..options import Options
 from ..scores import Scores
 from ..util import CustomizedMenu, ScreenshotLayer
@@ -54,7 +55,11 @@ class GameOverLayer(CustomizedMenu):
 		if len(self.name) > 0:
 			self.highScores.addHighScore(self.options.type, self.options.difficulty,
 			                             self.name, self.score)
-		self.on_quit()
+
+		# Go back to the menu and show the high scores table
+		# Popping twice then pushing doesn't work, so pop once then replace
+		director.pop()
+		director.replace(HighScoresScene(self.options))
 
 	def on_quit(self):
 		# Pop 2 scenes (the current Game Over scene and the Game scene)
