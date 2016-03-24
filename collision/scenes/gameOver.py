@@ -56,10 +56,12 @@ class GameOverLayer(CustomizedMenu):
 			self.highScores.addHighScore(self.options.type, self.options.difficulty,
 			                             self.name, self.score)
 
-		# Go back to the menu and show the high scores table
-		# Popping twice then pushing doesn't work, so pop once then replace
-		director.pop()
-		director.replace(HighScoresScene(self.options))
+			# Go back to the menu and show the high scores table
+			# Popping twice then pushing doesn't work, so pop once then replace
+			director.pop()
+			director.replace(HighScoresScene(self.options))
+		else:
+			self.on_quit()
 
 	def on_quit(self):
 		# Pop 2 scenes (the current Game Over scene and the Game scene)
