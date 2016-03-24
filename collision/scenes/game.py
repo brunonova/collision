@@ -138,7 +138,8 @@ class GameLayer(ColorLayer):
 			self.missile = Missile()
 			self.add(self.missile, z=0.2)
 
-		self.collMan = CollisionManagerGrid(0, 0, self.width, self.height, 30, 30)
+		self.collMan = CollisionManagerGrid(0, self.width, 0, self.height,
+		                                    self.player.radius, self.player.radius)
 		self.schedule(self.update)
 
 	def on_enter(self):
