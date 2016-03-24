@@ -34,7 +34,7 @@ class GameOverScene(Scene):
 class GameOverLayer(CustomizedMenu):
 	"""Layer that shows the Game Over screen."""
 	def __init__(self, score, balls, options, highScores):
-		super().__init__(_("High score!"))
+		super().__init__(_("High Score!"))
 		self.score = score
 		self.balls = balls
 		self.options = options

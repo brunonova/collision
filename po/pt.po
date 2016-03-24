@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: collision 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 18:33+0000\n"
+"POT-Creation-Date: 2016-03-24 18:44+0000\n"
 "PO-Revision-Date: 2016-03-24 18:33+0000\n"
 "Last-Translator: Bruno Nova <brunomb.nova@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
@@ -56,13 +56,13 @@ msgstr "Ecrã completo: "
 msgid "Hard"
 msgstr "Difícil"
 
+#: collision/scenes/gameOver.py:37
+msgid "High Score!"
+msgstr "Melhor Marca!"
+
 #: collision/scenes/highScores.py:53 collision/scenes/menu.py:67
 msgid "High Scores"
 msgstr "Melhores Marcas"
-
-#: collision/scenes/gameOver.py:36
-msgid "High score!"
-msgstr "Melhor marca!"
 
 #: collision/options.py:28 collision/scenes/highScores.py:65
 #: collision/scenes/menu.py:101
@@ -77,7 +77,7 @@ msgstr "Nome:"
 msgid "No"
 msgstr "Não"
 
-#: collision/scenes/gameOver.py:45
+#: collision/scenes/gameOver.py:46
 msgid "OK"
 msgstr "OK"
 
@@ -126,9 +126,12 @@ msgstr "Versão: {}"
 msgid "Yes"
 msgstr "Sim"
 
-#: collision/scenes/gameOver.py:44
+#: collision/scenes/gameOver.py:45
 msgid "Your name: "
 msgstr "Seu nome: "
+
+#~ msgid "High score!"
+#~ msgstr "Melhor marca!"
 
 #~ msgid "Balls collide: "
 #~ msgstr "Bolas colidem: "
