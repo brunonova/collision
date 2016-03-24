@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import random
-
 from cocos.actions import FadeOut, CallFunc
 from cocos.collision_model import CollisionManagerGrid
 from cocos.director import director
@@ -27,11 +26,13 @@ from gettext import gettext as _
 from pyglet import window
 from pyglet.event import EVENT_HANDLED
 
-from .quit import QuitScene
-from ..timer import Timer
-from ..options import Options
+from .gameOver import GameOverScene
 from .pause import PauseScene
+from .quit import QuitScene
 from ..balls import *
+from ..options import Options
+from ..scores import Scores
+from ..timer import Timer
 
 
 class GameScene(Scene):
@@ -329,9 +330,11 @@ class GameLayer(ColorLayer):
 		self.mouseDelta += Vector2(dx, dy)
 
 	def _gameOver(self):
-		#score = self.time if self.options.type == Options.TIME else self.coins
-		#if Scores.isHighScore(self.options.type, score):
-		#	director.push(GameOverScene.create(self.options))
-		#else:
-		#	director.pop()
-		director.pop()
+		score = int(self.time) if self.options.type == Options.TIME else self.coins
+
+		highScores = Scores()
+		if highScores.isHighScore(self.options.type, self.options.difficulty, score):
+			director.push(GameOverScene(score, self.getNumberOfEnemies(),
+			                            self.options, highScores))
+		else:
+			director.pop()
