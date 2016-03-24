@@ -18,7 +18,7 @@ The game has three difficulty levels and two modes:
 During the game different bonuses can also appear. These can provide either a
 positive or a negative effect.
 
-This game was inspired by Kollision, a KDE game.
+This game was inspired by [Kollision][kollision], a KDE game.
 
 
 ## Install
@@ -31,3 +31,4 @@ listed in `requirements.txt` are installed.
 
 [install]: INSTALL.md
 [gpl3]: http://www.gnu.org/licenses/gpl-3.0.html "GNU General Public License v3"
+[kollision]: https://www.kde.org/applications/games/kollision/ "KDE - Kollision"
