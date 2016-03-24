@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import json, os
+import json, os, sys
+from gettext import gettext as _
 
 from .options import Options
 
@@ -73,17 +74,22 @@ class Scores:
 		self._saveScores()  # save scores to disk
 
 	def _loadScores(self):
-		#TODO: check exceptions
-		#TODO: check validity
 		self._scoresDir = Options.getUserDataFolder()
 		filename = os.path.join(self._scoresDir, "scores.json")
-		if os.path.exists(filename):
-			with open(filename, "r") as file:
-				self.scores = json.load(file)
+
+		try:
+			if os.path.exists(filename):
+				with open(filename, "r") as file:
+					self.scores = json.load(file)
+		except Exception as e:
+			print(_("Failed to load high scores: {}").format(e), file=sys.stderr)
 
 	def _saveScores(self):
-		#TODO: check exceptions
 		filename = os.path.join(self._scoresDir, "scores.json")
 		os.makedirs(self._scoresDir, exist_ok=True)
-		with open(filename, "w") as file:
-			json.dump(self.scores, file)
+
+		try:
+			with open(filename, "w") as file:
+				json.dump(self.scores, file)
+		except Exception as e:
+			print(_("Failed to load high scores: {}").format(e), file=sys.stderr)
