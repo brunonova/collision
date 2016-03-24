@@ -78,6 +78,15 @@ class Options:
 		else:  # Linux or other
 			return os.path.join(home, ".config", "collision")
 
+	@staticmethod
+	def getUserDataFolder():
+		"""Returns the path to the user's .local/share or AppData/Roaming folder."""
+		home = os.environ["HOME"]
+		if sys.platform == "win32":  # Windows
+			return os.path.join(home, "AppData", "Roaming", "collision")
+		else:  # Linux or other
+			return os.path.join(home, ".local", ".share", "collision")
+
 	@property
 	def type(self):
 		value = self._config.getint("Options", "type", fallback=Options.TIME)

@@ -27,6 +27,8 @@ from gettext import gettext as _
 from pyglet import window
 from pyglet.event import EVENT_HANDLED
 
+from .gameOver import GameOverScene
+from ..scores import Scores
 from .quit import QuitScene
 from ..timer import Timer
 from ..options import Options
@@ -165,7 +167,7 @@ class GameLayer(ColorLayer):
 		self.isGameOver = True
 
 		# Fade out player ball and exit scene when done
-		self.player.do((FadeOut(2)) + CallFunc(lambda: director.pop()))
+		self.player.do((FadeOut(2)) + CallFunc(self._gameOver))
 
 		# Stop actions of enemy balls
 		for enemy in self.enemies:
@@ -326,3 +328,11 @@ class GameLayer(ColorLayer):
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		self.mouseDelta += Vector2(dx, dy)
+
+	def _gameOver(self):
+		#score = self.time if self.options.type == Options.TIME else self.coins
+		#if Scores.isHighScore(self.options.type, score):
+		#	director.push(GameOverScene.create(self.options))
+		#else:
+		#	director.pop()
+		director.pop()
