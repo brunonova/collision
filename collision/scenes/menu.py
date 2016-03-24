@@ -22,11 +22,11 @@ from cocos.menu import MenuItem, ToggleMenuItem, MultipleMenuItem, \
 from cocos.scene import Scene
 from cocos.text import Label
 from gettext import gettext as _
-from pyglet.window import key
 
-from ..util import CustomizedMenu
-from ..options import Options
 from .game import GameScene
+from .highScores import HighScoresScene
+from ..options import Options
+from ..util import CustomizedMenu, MultiMenuItem
 
 
 class MenuScene(Scene):
@@ -64,6 +64,7 @@ class MenuLayer(CustomizedMenu):
 		items = [
 			MenuItem(_("Play"), self.onPlay),
 			MenuItem(_("Options"), self.onOptions),
+			MenuItem(_("High Scores"), self.onHighScores),
 			MenuItem(_("Quit"), self.on_quit),
 		]
 		self.create_menu(items, shake(), shake_back())
@@ -73,6 +74,9 @@ class MenuLayer(CustomizedMenu):
 
 	def onOptions(self):
 		self.parent.switch_to(1)
+
+	def onHighScores(self):
+		director.push(HighScoresScene(self.options))
 
 	def on_enter(self):
 		super().on_enter()
@@ -120,26 +124,3 @@ class OptionsLayer(CustomizedMenu):
 
 	def on_quit(self):
 		self.parent.switch_to(0)
-
-
-class MultiMenuItem(MultipleMenuItem):
-	"""
-	MultipleMenuItem that "wraps around" the list of item.
-
-	This class is similar to MultipleMenuItem, except that:
-	* Clicking or pressing RIGHT/ENTER on the last option selects the 1st item;
-	* Clicking or pressing LEFT on the 1st item selects the last item.
-	"""
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-	def on_key_press(self, symbol, modifiers):
-		if symbol == key.LEFT and self.idx == 0:
-			# Select the last item+1 so that the call to the parent's on_key_press
-			# will select the last item
-			self.idx = len(self.items)
-		elif symbol in (key.RIGHT, key.ENTER) and self.idx == len(self.items) - 1:
-			# Select the first item-1 so that the call to the parent's on_key_press
-			# will select the first item
-			self.idx = -1
-		return super().on_key_press(symbol, modifiers)

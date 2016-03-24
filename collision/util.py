@@ -18,9 +18,10 @@ import math, pyglet
 from cocos.director import director
 from cocos.euclid import Vector2
 from cocos.layer import Layer
-from cocos.menu import Menu
+from cocos.menu import Menu, MultipleMenuItem
 from pyglet.gl import GL_RGBA, GL_TEXTURE_2D
 from pyglet.image import Texture
+from pyglet.window import key
 
 from .options import Options
 
@@ -90,6 +91,29 @@ class CustomizedMenu(Menu):
 		self.font_item_selected["font_name"] = Options.FONT_NAME
 		self.font_item_selected["font_size"] = self.font_item["font_size"]
 		self.font_item_selected["bold"] = True
+
+
+class MultiMenuItem(MultipleMenuItem):
+	"""
+	MultipleMenuItem that "wraps around" the list of item.
+
+	This class is similar to MultipleMenuItem, except that:
+	* Clicking or pressing RIGHT/ENTER on the last option selects the 1st item;
+	* Clicking or pressing LEFT on the 1st item selects the last item.
+	"""
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	def on_key_press(self, symbol, modifiers):
+		if symbol == key.LEFT and self.idx == 0:
+			# Select the last item+1 so that the call to the parent's on_key_press
+			# will select the last item
+			self.idx = len(self.items)
+		elif symbol in (key.RIGHT, key.ENTER) and self.idx == len(self.items) - 1:
+			# Select the first item-1 so that the call to the parent's on_key_press
+			# will select the first item
+			self.idx = -1
+		return super().on_key_press(symbol, modifiers)
 
 
 class ScreenshotLayer(Layer):
