@@ -21,6 +21,11 @@ positive or a negative effect.
 This game was inspired by [Kollision][kollision], a KDE game.
 
 
+## Screenshot
+
+![Screenshot][screen]
+
+
 ## Install
 
 Check the [INSTALL.md][install] file for instruction on how to install the game.
@@ -29,6 +34,7 @@ listed in `requirements.txt` are installed.
 
 
 
+[screen]: screenshot.png
 [install]: INSTALL.md
 [gpl3]: http://www.gnu.org/licenses/gpl-3.0.html "GNU General Public License v3"
 [kollision]: https://www.kde.org/applications/games/kollision/ "KDE - Kollision"
