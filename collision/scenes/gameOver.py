@@ -53,7 +53,7 @@ class GameOverLayer(CustomizedMenu):
 		# Add the high score if the name is not empty
 		if len(self.name) > 0:
 			self.highScores.addHighScore(self.options.type, self.options.difficulty,
-			                             self.name, self.score, self.balls)
+			                             self.name, self.score)
 		self.on_quit()
 
 	def on_quit(self):

@@ -45,7 +45,7 @@ class Scores:
 				# Check if this score is better than the last high score
 				return score > scores[Scores.MAX_HIGH_SCORES - 1]["score"]
 
-	def addHighScore(self, type, difficulty, name, score, balls):
+	def addHighScore(self, type, difficulty, name, score):
 		type, difficulty = str(type), str(difficulty)  # convert params to strings
 
 		# Create the dicts for type and difficulty if they don't exist
@@ -56,7 +56,7 @@ class Scores:
 
 		# Add the score to the list of high scores
 		scores = self.scores[type][difficulty]
-		scoreDict = {"name": name, "score": score, "balls": balls}
+		scoreDict = {"name": name, "score": score}
 		for i, s in enumerate(scores):
 			if score > s["score"]:
 				# Worse score found, so add the score before this one
