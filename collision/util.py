@@ -17,6 +17,7 @@
 import math, pyglet
 from cocos.director import director
 from cocos.euclid import Vector2
+from cocos.layer import Layer
 from cocos.menu import Menu
 from pyglet.gl import GL_RGBA, GL_TEXTURE_2D
 from pyglet.image import Texture
@@ -74,17 +75,6 @@ def getWindowUsableSize():
 	else:  # real window is taller than virtual window
 		return realSize[0], int(realSize[0] / virtualRatio)
 
-def takeScreenshot():
-	"""
-	Takes a screenshot of the window and returns it.
-
-	@return: screenshot texture.
-	"""
-	width, height = getWindowUsableSize()
-	texture = Texture.create_for_size(GL_TEXTURE_2D, width, height, GL_RGBA)
-	texture.blit_into(pyglet.image.get_buffer_manager().get_color_buffer(), 0, 0, 0)
-	return texture.get_region(0, 0, width, height)
-
 
 class CustomizedMenu(Menu):
 	"""The same as the Menu class, but with custom fonts."""
@@ -100,3 +90,33 @@ class CustomizedMenu(Menu):
 		self.font_item_selected["font_name"] = Options.FONT_NAME
 		self.font_item_selected["font_size"] = self.font_item["font_size"]
 		self.font_item_selected["bold"] = True
+
+
+class ScreenshotLayer(Layer):
+	"""
+	A layer that draws a screenshot of the current window as the background.
+
+	The code is based on Cocos' pause module.
+	"""
+	def __init__(self):
+		super().__init__()
+		self.background = ScreenshotLayer.takeScreenshot()
+
+	@staticmethod
+	def takeScreenshot():
+		"""
+		Takes a screenshot of the current window and returns it.
+
+		@return: screenshot texture.
+		"""
+		width, height = getWindowUsableSize()
+		texture = Texture.create_for_size(GL_TEXTURE_2D, width, height, GL_RGBA)
+		texture.blit_into(pyglet.image.get_buffer_manager().get_color_buffer(), 0, 0, 0)
+		return texture.get_region(0, 0, width, height)
+
+	def draw(self):
+		# Draw the screenshot as the background
+		if self.background:
+			width, height = director.get_window_size()
+			self.background.blit(0, 0, width=width, height=height)
+		super().draw()

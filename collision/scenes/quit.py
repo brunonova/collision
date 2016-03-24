@@ -18,34 +18,19 @@ from cocos.menu import MenuItem, shake, shake_back, Menu
 from cocos.scene import Scene
 from gettext import gettext as _
 
-from ..util import CustomizedMenu
-from .. import util
+from ..util import CustomizedMenu, ScreenshotLayer
 
 
 class QuitScene(Scene):
-	"""
-	The in-game Quit menu scene.
-
-	Don't use the constructor directly! Instead, call QuitScene.create().
-
-	The scene will show a "screenshot" of the previous scene as background.
-	The code is based on Cocos' pause module.
-	"""
-	def __init__(self, background=None):
-		super().__init__(QuitLayer(background))
-
-	@staticmethod
-	def create():
-		"""Creates and returns the Pause scene."""
-		# "Take a screenshot" and pass it to the scene
-		return QuitScene(util.takeScreenshot())
+	"""The in-game Quit menu scene."""
+	def __init__(self):
+		super().__init__(ScreenshotLayer(), QuitLayer())
 
 
 class QuitLayer(CustomizedMenu):
 	"""Layer that shows a Quit menu."""
-	def __init__(self, background):
+	def __init__(self):
 		super().__init__(_("Quit?"))
-		self.background = background
 
 		items = [
 			MenuItem(_("Yes"), self.onYes),
@@ -61,13 +46,6 @@ class QuitLayer(CustomizedMenu):
 	def onNo(self):
 		# Pop the current Quit scene
 		director.pop()
-
-	def draw(self):
-		# Draw the screenshot as the background
-		if self.background:
-			width, height = director.get_window_size()
-			self.background.blit(0, 0, width=width, height=height)
-		super().draw()
 
 	def on_quit(self):
 		self.onNo()

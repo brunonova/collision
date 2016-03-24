@@ -24,35 +24,21 @@ from pyglet import window
 from pyglet.event import EVENT_HANDLED
 
 from ..options import Options
-from .. import util
+from ..util import ScreenshotLayer
 
 
 class PauseScene(Scene):
-	"""
-	The Pause Screen scene.
-
-	Don't use the constructor directly! Instead, call PauseScene.create().
-
-	The scene will show a "screenshot" of the previous scene as background.
-	The code is based on Cocos' pause module.
-	"""
-	def __init__(self, background=None):
-		super().__init__(PauseLayer(background))
-
-	@staticmethod
-	def create():
-		"""Creates and returns the Pause scene."""
-		# "Take a screenshot" and pass it to the scene
-		return PauseScene(util.takeScreenshot())
+	"""The Pause Screen scene."""
+	def __init__(self):
+		super().__init__(ScreenshotLayer(), PauseLayer())
 
 
 class PauseLayer(Layer):
 	"""Layer that shows "PAUSE"."""
 	is_event_handler = True
 
-	def __init__(self, background):
+	def __init__(self):
 		super().__init__()
-		self.background = background
 
 		width, height = director.get_window_size()
 		paused = Label(_("PAUSE"), font_name="Ubuntu", font_size=64, bold=True,
@@ -60,13 +46,6 @@ class PauseLayer(Layer):
 		paused.position = width // 2, height // 2
 		paused.do(Repeat(FadeOut(0.3) + FadeIn(0.3)))  # blink
 		self.add(paused)
-
-	def draw(self):
-		# Draw the screenshot as the background
-		if self.background:
-			width, height = director.get_window_size()
-			self.background.blit(0, 0, width=width, height=height)
-		super().draw()
 
 	def on_key_press(self, key, modifiers):
 		if key in (window.key.P, window.key.PAUSE, window.key.ESCAPE):

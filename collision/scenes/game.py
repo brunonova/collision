@@ -27,8 +27,6 @@ from gettext import gettext as _
 from pyglet import window
 from pyglet.event import EVENT_HANDLED
 
-from .gameOver import GameOverScene
-from ..scores import Scores
 from .quit import QuitScene
 from ..timer import Timer
 from ..options import Options
@@ -180,12 +178,12 @@ class GameLayer(ColorLayer):
 	def pauseGame(self):
 		"""Pauses the game."""
 		if not self.isGameOver:
-			director.push(PauseScene.create())
+			director.push(PauseScene())
 
 	def showQuitMenu(self):
 		"""Shows the Quit menu."""
 		if not self.isGameOver:
-			director.push(QuitScene.create())
+			director.push(QuitScene())
 
 	def giveBonus(self):
 		"""Gives a random advantage or disadvantage to the player."""
