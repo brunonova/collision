@@ -15,10 +15,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gettext, os, pyglet
+from argparse import ArgumentParser
 from cocos.director import director
 
+from .options import Options
 from .scenes.menu import MenuScene
 
+
+def parseArgs():
+	"""Parses the command-line arguments."""
+	parser = ArgumentParser(description="A ball dodging game")
+	parser.add_argument("-v", "--version", action="version",
+	                    version="%(prog)s {}".format(Options.VERSION))
+	parser.parse_args()
 
 def startGame():
 	"""Starts the game."""
@@ -28,6 +37,9 @@ def startGame():
 	# Setup gettext
 	gettext.bindtextdomain("collision", os.path.join(path, "mo"))
 	gettext.textdomain("collision")
+
+	# Parse command-line arguments
+	parseArgs()
 
 	# Setup resource paths
 	pyglet.resource.path.append(os.path.join(path, "res"))
