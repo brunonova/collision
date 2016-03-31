@@ -85,7 +85,7 @@ class Options:
 		if sys.platform == "win32":  # Windows
 			return os.path.join(home, "AppData", "Roaming", "collision")
 		else:  # Linux or other
-			return os.path.join(home, ".local", ".share", "collision")
+			return os.path.join(home, ".local", "share", "collision")
 
 	@property
 	def type(self):
