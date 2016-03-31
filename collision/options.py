@@ -21,7 +21,7 @@ from gettext import gettext as _
 class Options:
 	"""Holds the game options."""
 	# Game version
-	VERSION = "0.0.1"
+	VERSION = "1.0.0"
 
 	# Names of the multiple-choice options
 	TYPE_NAMES = _("Time"), _("Coins")
