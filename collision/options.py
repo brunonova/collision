@@ -32,9 +32,9 @@ class Options:
 	EASY, MEDIUM, HARD = 0, 1, 2
 
 	# Parameters that depend on difficulty
-	INTERVAL_ADD_ENEMY = 20, 15, 10  # Interval between enemy balls additions
 	ENEMY_SPEED = 200, 300, 400  # Initial enemy balls speed
-	COINS_ADD_ENEMY = 8, 6, 4  # Coins needed to add a new enemy ball
+	INTERVAL_ADD_ENEMY = 15, 15, 15  # Interval between enemy balls additions
+	COINS_ADD_ENEMY = 10, 10, 10  # Coins needed to add a new enemy ball
 
 	# Other constants
 	BACKGROUND_COLOR = (192, 192, 192, 255)
