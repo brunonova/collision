@@ -3,6 +3,8 @@ Collision
 
 [![GPLv3 license](http://img.shields.io/badge/license-GPLv3-brightgreen.svg)][gpl3]
 
+**A newer version was released. Please see https://github.com/brunonova/collision2.**
+
 In this game you control a green ball. Using your mouse or keyboard, you have to
 avoid hitting the ever increasing number of red balls that are moving around in
 the game window. The moment you touch one of them, the game is over.
@@ -18,7 +20,8 @@ The game has three difficulty levels and two modes:
 During the game different bonuses can also appear. These can provide either a
 positive or a negative effect.
 
-This game was inspired by [Kollision][kollision], a KDE game.
+This game was developed in Python and Cocos2d, and was inspired by
+[Kollision][kollision], a KDE game.
 
 
 ## Screenshot
@@ -35,6 +38,7 @@ listed in `requirements.txt` are installed.
 
 
 [screen]: screenshot.png
+[collision2]: https://github.com/brunonova/collision2
 [install]: INSTALL.md
 [gpl3]: http://www.gnu.org/licenses/gpl-3.0.html "GNU General Public License v3"
 [kollision]: https://www.kde.org/applications/games/kollision/ "KDE - Kollision"
